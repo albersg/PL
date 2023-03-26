@@ -59,8 +59,8 @@ public class TinyASint {
 		public abstract void procesa(Procesamiento p);
 	}
 	
-	public static class Dec_vacia extends Decs {
-		public Dec_vacia() {
+	public static class Decs_vacia extends Decs {
+		public Decs_vacia() {
 			
 		}
 		
@@ -110,13 +110,13 @@ public class TinyASint {
 	}
 
 	public static class DecVar extends Dec {
-		private StringLocalizado val;
+		private Tipo tipo;
 		private StringLocalizado id;
 
-		public DecVar(StringLocalizado id, StringLocalizado val) {
+		public DecVar(Tipo tipo, StringLocalizado id) {
 			super();
 			this.id = id;
-			this.val = val;
+			this.tipo = tipo;
 		}
 
 		public StringLocalizado id() {
@@ -128,19 +128,19 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
-		public StringLocalizado val() {
-			return val;
+		public Tipo tipo() {
+			return tipo;
 		}
 	}
 
 	public static class DecTipo extends Dec {
-		private StringLocalizado val;
+		private Tipo tipo;
 		private StringLocalizado id;
 
-		public DecTipo(StringLocalizado id, StringLocalizado val) {
+		public DecTipo(Tipo tipo, StringLocalizado id) {
 			super();
 			this.id = id;
-			this.val = val;
+			this.tipo = tipo;
 		}
 
 		public StringLocalizado id() {
@@ -152,8 +152,8 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
-		public StringLocalizado val() {
-			return val;
+		public Tipo tipo() {
+			return tipo;
 		}
 	}
 
@@ -194,6 +194,7 @@ public class TinyASint {
 
 	}
 
+	
 	// Tipos
 
 	public static abstract class Tipo extends Nodo {
@@ -498,6 +499,227 @@ public class TinyASint {
 		}
 	}
 	
+	public static class Asig extends I {
+		private Exp e1;
+		private Exp e2;
+		
+		public Asig(Exp e1, Exp e2) {
+			super();
+			this.e1 = e1;
+			this.e2 = e2;
+		}
+		
+		public Exp e1() {
+			return e1;
+		}
+		
+		public Exp e2() {
+			return e2;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class If_then extends I{
+		private Exp e;
+		private Is is;
+		
+		public If_then(Exp e, Is is) {
+			super();
+			this.e = e;
+			this.is = is;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public Is is() {
+			return is;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class If_then_else extends I{
+		private Exp e;
+		private Is is1;
+		private Is is2;
+		
+		public If_then_else(Exp e, Is is1, Is is2) {
+			super();
+			this.e = e;
+			this.is1 = is1;
+			this.is2 = is2;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public Is is1() {
+			return is1;
+		}
+		
+		public Is is2() {
+			return is2;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class While extends I{
+		private Exp e;
+		private Is is;
+		
+		public While(Exp e, Is is) {
+			super();
+			this.e = e;
+			this.is = is;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public Is is() {
+			return is;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Read extends I{
+		private Exp e;
+		
+		public Read(Exp e) {
+			super();
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Write extends I{
+		private Exp e;
+		
+		public Write(Exp e) {
+			super();
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Nl extends I{
+		
+		public Nl() {
+			super();
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class New extends I{
+		private Exp e;
+		
+		public New(Exp e) {
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Delete extends I{
+		private Exp e;
+		
+		public Delete(Exp e) {
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Call extends I{
+		private Exp e;
+		private PReal preal;
+		
+		public Call(Exp e, PReal preal) {
+			super();
+			this.e = e;
+			this.preal = preal;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public PReal preal() {
+			return preal;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class IComp extends I{
+		private Exp e;
+		private Is is;
+		
+		public IComp(Exp e, Is is) {
+			super();
+			this.e = e;
+			this.is = is;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public Is is() {
+			return is;
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
 	// Campos
 	
 	public static class Campo extends Nodo{
@@ -573,11 +795,49 @@ public class TinyASint {
 		}
 	}
 	
-	//
+	// Parámetros reales
+	
+	public static abstract class PReal extends Nodo{
+		private Exp e;
+		
+		public PReal(Exp e) {
+			super();
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+		
+		public abstract void procesa(Procesamiento p);
+	}
+	
+	public static class PReals extends Nodo{
+		public PReals() {
+		}
+		
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
 
-	public static class Div extends ExpMultiplicativa {
-		public Div(Exp arg0, Exp arg1) {
-			super(arg0, arg1);
+	public static class PReal_muchos extends PReals {
+		private PReal preal;
+		private PReals preals;
+
+		public PReal_muchos(PReals preals, PReal preal) {
+			super();
+			this.preals = preals;
+			this.preal = preal;
+		}
+
+		public PReal preal() {
+			return preal;
+		}
+
+		public PReals preals() {
+			return preals;
 		}
 
 		public void procesa(Procesamiento p) {
@@ -585,6 +845,26 @@ public class TinyASint {
 		}
 	}
 
+	public static class PReal_uno extends PReals {
+		private PReal preal;
+
+		public PReal_uno(PReal preal) {
+			super();
+			this.preal = preal;
+		}
+
+		public PReal preal() {
+			return preal;
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	// Expresiones
+	
+	
 	public static abstract class Exp {
 		public Exp() {
 		}
@@ -593,14 +873,154 @@ public class TinyASint {
 
 		public abstract void procesa(Procesamiento procesamiento);
 	}
-
-	private static abstract class ExpAditiva extends ExpBin {
-		public ExpAditiva(Exp arg0, Exp arg1) {
-			super(arg0, arg1);
+	
+	public static class LitInt extends Exp {
+		private StringLocalizado s;
+		
+		public LitInt(StringLocalizado s) {
+			super();
+			this.s = s;
+		}
+		
+		public StringLocalizado s() {
+			return s;
 		}
 
-		public final int prioridad() {
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
 			return 0;
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class LitReal extends Exp {
+		private StringLocalizado s;
+		
+		public LitReal(StringLocalizado s) {
+			super();
+			this.s = s;
+		}
+		
+		public StringLocalizado s() {
+			return s;
+		}
+
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class LitStr extends Exp {
+		private StringLocalizado s;
+		
+		public LitStr(StringLocalizado s) {
+			super();
+			this.s = s;
+		}
+		
+		public StringLocalizado s() {
+			return s;
+		}
+
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class True extends Exp {
+		
+		public True() {
+			super();
+		}
+		
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class False extends Exp {
+		
+		public False() {
+			super();
+		}
+		
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Id extends Exp {
+		private StringLocalizado s;
+		
+		public Id(StringLocalizado s) {
+			super();
+			this.s = s;
+		}
+		
+		public StringLocalizado s() {
+			return s;
+		}
+
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+
+	public static class Null extends Exp {
+		
+		public Null() {
+			super();
+		}
+		
+		@Override
+		public int prioridad() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+	
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
 		}
 	}
 
@@ -622,9 +1042,86 @@ public class TinyASint {
 			return arg1;
 		}
 	}
+	
+	private static abstract class ExpRelacional extends ExpBin{
 
-	private static abstract class ExpMultiplicativa extends ExpBin {
-		public ExpMultiplicativa(Exp arg0, Exp arg1) {
+		public ExpRelacional(Exp e1, Exp e2) {
+			super(e1, e2);
+		}
+		
+		@Override
+		public final int prioridad() {
+			return 0;
+		}
+	}
+	
+	public static class Menor extends ExpRelacional{
+		public Menor(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Mayor extends ExpRelacional{
+		public Mayor(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class MenorIgual extends ExpRelacional{
+		public MenorIgual(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class MayorIgual extends ExpRelacional{
+		public MayorIgual(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Igual extends ExpRelacional{
+		public Igual(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	public static class Distinto extends ExpRelacional{
+		public Distinto(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	private static abstract class ExpAditiva extends ExpBin {
+		public ExpAditiva(Exp arg0, Exp arg1) {
 			super(arg0, arg1);
 		}
 
@@ -632,28 +1129,77 @@ public class TinyASint {
 			return 1;
 		}
 	}
-
-	public static class Id extends Exp {
-		private StringLocalizado id;
-
-		public Id(StringLocalizado id) {
-			super();
-			this.id = id;
-		}
-
-		public StringLocalizado id() {
-			return id;
-		}
-
-		public final int prioridad() {
-			return 2;
+	
+	public static class Suma extends ExpAditiva {
+		public Suma(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
 		}
 
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
 	}
+	
+	public static class Resta extends ExpAditiva {
+		public Resta(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
 
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	private static abstract class ExpLogica extends ExpBin{
+		public ExpLogica(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
+
+		public final int prioridad() {
+			return 2;
+		}
+	}
+	
+	public static class And extends ExpLogica {
+		public And(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Or extends ExpLogica {
+		public Or(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	private static abstract class ExpMultiplicativa extends ExpBin {
+		public ExpMultiplicativa(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
+
+		public final int prioridad() {
+			return 3;
+		}
+	}
+	
+	public static class Div extends ExpMultiplicativa {
+		public Div(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
 	public static class Mul extends ExpMultiplicativa {
 		public Mul(Exp arg0, Exp arg1) {
 			super(arg0, arg1);
@@ -664,20 +1210,9 @@ public class TinyASint {
 		}
 	}
 
-	public static class Num extends Exp {
-		private StringLocalizado num;
-
-		public Num(StringLocalizado num) {
-			super();
-			this.num = num;
-		}
-
-		public StringLocalizado num() {
-			return num;
-		}
-
-		public final int prioridad() {
-			return 2;
+	public static class Modulo extends ExpMultiplicativa {
+		public Modulo(Exp arg0, Exp arg1) {
+			super(arg0, arg1);
 		}
 
 		public void procesa(Procesamiento p) {
@@ -685,6 +1220,112 @@ public class TinyASint {
 		}
 	}
 
+	private static abstract class ExpUnaria extends Exp {
+		private Exp e;
+		
+		public ExpUnaria(Exp e) {
+			super();
+			this.e = e;
+		}
+		
+		public Exp e() {
+			return e;
+		}
+
+		public final int prioridad() {
+			return 4;
+		}
+	}
+	
+	public static class Negativo extends ExpUnaria {
+		public Negativo(Exp arg0) {
+			super(arg0);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+
+	public static class Not extends ExpUnaria {
+		public Not(Exp arg0) {
+			super(arg0);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	private static abstract class ExpMemoria extends Exp {
+		private Exp e1;
+		private Exp e2;
+		private StringLocalizado s;
+		
+		public ExpMemoria(Exp e1, StringLocalizado s) {
+			super();
+			this.e1 = e1;
+			this.s = s;
+		}
+		
+		public ExpMemoria(Exp e1, Exp e2) {
+			super();
+			this.e1 = e1;
+			this.e2 = e2;
+		}
+		
+		public Exp e1() {
+			return e1;
+		}
+		
+		public Exp e2() {
+			return e2;
+		}
+		
+		public StringLocalizado s() {
+			return s;
+		}
+
+		public final int prioridad() {
+			return 5;
+		}
+	}
+	
+	public static class Acc extends ExpMemoria{
+		
+		public Acc(Exp e1, StringLocalizado s) {
+			super(e1,s);
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}	
+	}
+	
+	public static class Indx extends ExpMemoria{
+
+		public Indx(Exp e1, Exp e2) {
+			super(e1,e2);
+		}
+		
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}	
+	}
+	
+	public static class Dref extends ExpMemoria{
+		
+		public Dref(Exp e, StringLocalizado s) {
+			super(e,s);
+		}
+
+		@Override
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}	
+	}
 	
 	public static class StringLocalizado {
 		private String s;
@@ -717,63 +1358,69 @@ public class TinyASint {
 			return s;
 		}
 	}
-
-	public static class Suma extends ExpAditiva {
-		public Suma(Exp arg0, Exp arg1) {
-			super(arg0, arg1);
-		}
-
-		public void procesa(Procesamiento p) {
-			p.procesa(this);
-		}
+	
+	// Constructoras
+	
+	public Prog prog(Decs decs, Is is) {
+		return new Prog(decs, is);
 	}
-
-	public Dec dec(StringLocalizado id, StringLocalizado val) {
-		return new Dec(id, val);
+	
+	public Decs_vacia decs_vacia() {
+		return new Decs_vacia();
 	}
-
-	public Decs decs_muchas(Decs decs, Dec dec) {
-		return new Decs_muchas(decs, dec);
-	}
-
-	public Decs decs_una(Dec dec) {
+	
+	public Decs_una decs_una(Dec dec) {
 		return new Decs_una(dec);
 	}
-
-	public Exp div(Exp arg0, Exp arg1) {
-		return new Div(arg0, arg1);
+	
+	public Decs_muchas decs_muchas(Decs decs, Dec dec) {
+		return new Decs_muchas(decs, dec);
 	}
-
-	public Exp id(StringLocalizado num) {
-		return new Id(num);
+	
+	public DecVar decVar(Tipo t, StringLocalizado s) {
+		return new DecVar(t,s);
 	}
-
-	public Exp mul(Exp arg0, Exp arg1) {
-		return new Mul(arg0, arg1);
+	
+	public DecTipo decTipo(Tipo t, StringLocalizado s) {
+		return new DecTipo(t,s);
 	}
-
-	public Exp num(StringLocalizado num) {
-		return new Num(num);
+	
+	public DecProc decProc(StringLocalizado s, PForms pforms, Decs decs, Is is) {
+		return new DecProc(s,pforms, decs, is);
 	}
-
-	// Constructoras
-	public Prog prog_con_decs(Exp exp, Decs decs) {
-		return new Prog_con_decs(exp, decs);
+	
+	public TipoInt tipoInt() {
+		return new TipoInt();
 	}
-
-	public Prog prog_sin_decs(Exp exp) {
-		return new Prog_sin_decs(exp);
+	
+	public TipoReal tipoReal() {
+		return new TipoReal();
 	}
-
-	public Exp resta(Exp arg0, Exp arg1) {
-		return new Resta(arg0, arg1);
+	
+	public TipoBool tipoBool() {
+		return new TipoBool();
 	}
-
-	public StringLocalizado str(String s, int fila, int col) {
-		return new StringLocalizado(s, fila, col);
+	
+	public TipoString tipoString() {
+		return new TipoString();
 	}
-
-	public Exp suma(Exp arg0, Exp arg1) {
-		return new Suma(arg0, arg1);
+	
+	public TipoRef tipoRef(StringLocalizado s) {
+		return new TipoRef(s);
 	}
+	
+	public TipoRecord tipoRecord(Campos campos) {
+		return new TipoRecord(campos);
+	}
+	
+	public TipoArray tipoArray(StringLocalizado s, Tipo t) {
+		return new TipoArray(s, t);
+	}
+	
+	public TipoPointer tipoPointer(Tipo t) {
+		return new TipoPointer(t);
+	}
+	
 }
+
+

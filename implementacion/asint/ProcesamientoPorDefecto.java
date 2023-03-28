@@ -8,7 +8,7 @@ import implementacion.asint.TinyASint.Campo;
 import implementacion.asint.TinyASint.Campos_muchos;
 import implementacion.asint.TinyASint.Campos_uno;
 import implementacion.asint.TinyASint.Dec;
-import implementacion.asint.TinyASint.Dec_vacia;
+import implementacion.asint.TinyASint.Decs_vacia;
 import implementacion.asint.TinyASint.Decs_muchas;
 import implementacion.asint.TinyASint.Decs_una;
 import implementacion.asint.TinyASint.Delete;
@@ -40,6 +40,7 @@ import implementacion.asint.TinyASint.Nl;
 import implementacion.asint.TinyASint.Not;
 import implementacion.asint.TinyASint.Null;
 import implementacion.asint.TinyASint.Or;
+import implementacion.asint.TinyASint.PForm;
 import implementacion.asint.TinyASint.PFormRef;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReals;
@@ -111,12 +112,6 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 
 	@Override
 	public void procesa(Prog prog) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void procesa(Dec_vacia dec_vacia) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -409,8 +404,15 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 		
 	}
 
+
 	@Override
-	public void procesa(Resta exp) {
+	public void procesa(Decs_vacia dec_vacia) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PForm pForm) {
 		// TODO Auto-generated method stub
 		
 	}

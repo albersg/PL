@@ -1,4 +1,4 @@
-package maquinaP;
+package implementacion.maquinaP;
 
 public class GestorPilaActivaciones {
 	private int fin;

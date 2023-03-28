@@ -14,8 +14,6 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		
 	}
 	
-	public void procesa(Prog programa) {
-		if(programa.)
-	}
+
 	
 }

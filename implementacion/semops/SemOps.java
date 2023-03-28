@@ -1,4 +1,4 @@
-package semops;
+package implementacion.semops;
 
 import implementacion.asint.TinyASint;
 import implementacion.asint.TinyASint.Decs;

@@ -1,20 +1,55 @@
 package implementacion.asint;
 
 public class TinyASint {
-
+	
 	public enum tNodo {
 		INT, REAL, BOOL, STRING, ID, ARRAY, RECORD, POINTER
 	}
 
 	public static abstract class Nodo {
+		private int tam;
+		private int tamBase;
+		private int dir;
+		private int nivel;
 		private tNodo tipo;
-
-		public Nodo() {
-
+		private int etqInic;
+		private int etqSig;
+		private boolean esDesig;
+		private Nodo vinculo;
+		private boolean esParamRef;
+		
+		public int getTam() {
+			return tam;
 		}
-
-		public tNodo getTNodo() {
+		public int getTamBase() {
+			return tamBase;
+		}
+		public int getDir() {
+			return dir;
+		}
+		public int getNivel() {
+			return nivel;
+		}
+		public tNodo getTipo() {
 			return tipo;
+		}
+		public int getEtqInic() {
+			return etqInic;
+		}
+		public int getEtqSig() {
+			return etqSig;
+		}
+		public boolean getEsDesig() {
+			return esDesig;
+		}
+		public Nodo getVinculo() {
+			return vinculo;
+		}
+		public boolean getEsParamRef() {
+			return esParamRef;
+		}
+		public void setEsParamRef(boolean b) {
+			 this.esParamRef = b;
 		}
 	}
 	
@@ -50,6 +85,7 @@ public class TinyASint {
 		}
 
 		public abstract void procesa(Procesamiento p);
+		public abstract void recolecta_procs(Procesamiento p);
 	}
 
 	public static abstract class Decs extends Nodo {
@@ -57,6 +93,7 @@ public class TinyASint {
 		}
 
 		public abstract void procesa(Procesamiento p);
+		public abstract void recolecta_procs(Procesamiento p);
 	}
 	
 	public static class Decs_vacia extends Decs {
@@ -66,6 +103,11 @@ public class TinyASint {
 		
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
 		}
 	}
 
@@ -90,6 +132,11 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
+		}
 	}
 
 	public static class Decs_una extends Decs {
@@ -106,6 +153,11 @@ public class TinyASint {
 
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
 		}
 	}
 
@@ -131,6 +183,11 @@ public class TinyASint {
 		public Tipo tipo() {
 			return tipo;
 		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
+		}
 	}
 
 	public static class DecTipo extends Dec {
@@ -154,6 +211,11 @@ public class TinyASint {
 
 		public Tipo tipo() {
 			return tipo;
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
 		}
 	}
 
@@ -190,6 +252,11 @@ public class TinyASint {
 		@Override
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			p.recolecta_procs(this);
 		}
 
 	}
@@ -359,11 +426,16 @@ public class TinyASint {
 			return tipo;
 		}
 		
+		
 		public abstract void procesa(Procesamiento p);
 	}
 	
 	public static class PForms extends Nodo{
 		public PForms() {
+		}
+		
+		public boolean varias() {
+			return false;
 		}
 		
 		public void procesa(Procesamiento p) {
@@ -374,11 +446,14 @@ public class TinyASint {
 	public static class PFormRef extends PForm{
 		public PFormRef(StringLocalizado id, Tipo tipo) {
 			super(id,tipo);
+			this.setEsParamRef(true);
 		}
 		
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+
+		
 	}
 	
 	public static class PForm_vacia extends PForms {
@@ -407,6 +482,10 @@ public class TinyASint {
 
 		public PForms pforms() {
 			return pforms;
+		}
+		
+		public boolean varias() {
+			return true;
 		}
 
 		public void procesa(Procesamiento p) {
@@ -676,20 +755,20 @@ public class TinyASint {
 	
 	public static class Call extends I{
 		private Exp e;
-		private PReal preal;
+		private PReals preals;
 		
-		public Call(Exp e, PReal preal) {
+		public Call(Exp e, PReals preals) {
 			super();
 			this.e = e;
-			this.preal = preal;
+			this.preals = preals;
 		}
 		
 		public Exp e() {
 			return e;
 		}
 		
-		public PReal preal() {
-			return preal;
+		public PReals preals() {
+			return preals;
 		}
 		
 		public void procesa(Procesamiento p) {
@@ -698,17 +777,17 @@ public class TinyASint {
 	}
 	
 	public static class IComp extends I{
-		private Exp e;
+		private Decs decs;
 		private Is is;
 		
-		public IComp(Exp e, Is is) {
+		public IComp(Decs decs, Is is) {
 			super();
-			this.e = e;
+			this.decs = decs;
 			this.is = is;
 		}
 		
-		public Exp e() {
-			return e;
+		public Decs decs() {
+			return decs;
 		}
 		
 		public Is is() {
@@ -816,6 +895,10 @@ public class TinyASint {
 		public PReals() {
 		}
 		
+		public boolean varias() {
+			return false;
+		}
+		
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
@@ -838,6 +921,10 @@ public class TinyASint {
 
 		public PReals preals() {
 			return preals;
+		}
+		
+		public boolean varias() {
+			return true;
 		}
 
 		public void procesa(Procesamiento p) {
@@ -862,10 +949,21 @@ public class TinyASint {
 		}
 	}
 	
+	public static class PReal_ninguno extends PReals {
+
+		public PReal_ninguno() {
+			super();
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
 	// Expresiones
 	
 	
-	public static abstract class Exp {
+	public static abstract class Exp extends Nodo{
 		public Exp() {
 		}
 

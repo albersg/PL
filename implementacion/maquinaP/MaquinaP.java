@@ -845,6 +845,18 @@ public class MaquinaP {
 			return "write";
 		};
 	}
+	
+	private class IInt2Real implements Instruccion{
+		public void ejecuta() {
+			Valor opnd = pilaEvaluacion.pop();
+			pilaEvaluacion.push(new ValorReal((float) opnd.valorInt()));
+			pc++;
+		}
+
+		public String toString() {
+			return "int2real";
+		};
+	}
 
 	private class Valor {
 		public boolean valorBool() {
@@ -1047,6 +1059,8 @@ public class MaquinaP {
 
 	private INot INOT;
 
+	private IInt2Real IINT2REAL;
+	
 	private IApilaind IAPILAIND;
 
 	private IDesapilaind IDESAPILAIND;
@@ -1151,10 +1165,6 @@ public class MaquinaP {
 		return new IApilaString(val);
 	}
 	
-	public Instruccion apilaBool(Boolean val) {
-		return new IApilaBool(val);
-	}
-
 	public Instruccion dealloc(int tam) {
 		return new IDealloc(tam);
 	}
@@ -1387,5 +1397,9 @@ public class MaquinaP {
 	
 	public Instruccion write() {
 		return IWRITE;
+	}
+	
+	public Instruccion int2real() {
+		return IINT2REAL;
 	}
 }

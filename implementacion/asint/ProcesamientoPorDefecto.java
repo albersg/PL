@@ -8,6 +8,9 @@ import implementacion.asint.TinyASint.Campo;
 import implementacion.asint.TinyASint.Campos_muchos;
 import implementacion.asint.TinyASint.Campos_uno;
 import implementacion.asint.TinyASint.Dec;
+import implementacion.asint.TinyASint.DecProc;
+import implementacion.asint.TinyASint.DecTipo;
+import implementacion.asint.TinyASint.DecVar;
 import implementacion.asint.TinyASint.Decs_vacia;
 import implementacion.asint.TinyASint.Decs_muchas;
 import implementacion.asint.TinyASint.Decs_una;
@@ -413,6 +416,54 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 
 	@Override
 	public void procesa(PForm pForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(DecVar decVar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(DecProc decProc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(Decs_una decs_una) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(Decs_vacia decs_vacia) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(Decs_muchas decs_muchas) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(DecVar decVar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(DecTipo decTipo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recolecta_procs(DecProc decProc) {
 		// TODO Auto-generated method stub
 		
 	}

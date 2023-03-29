@@ -8,6 +8,9 @@ import implementacion.asint.TinyASint.Campo;
 import implementacion.asint.TinyASint.Campos_muchos;
 import implementacion.asint.TinyASint.Campos_uno;
 import implementacion.asint.TinyASint.Dec;
+import implementacion.asint.TinyASint.DecProc;
+import implementacion.asint.TinyASint.DecTipo;
+import implementacion.asint.TinyASint.DecVar;
 import implementacion.asint.TinyASint.Decs_vacia;
 import implementacion.asint.TinyASint.Decs_muchas;
 import implementacion.asint.TinyASint.Decs_una;
@@ -63,10 +66,16 @@ import implementacion.asint.TinyASint.Write;
 public interface Procesamiento {
 	
 	void procesa(Dec dec);
+	
+	void procesa(Decs_vacia dec_vacia);
 
 	void procesa(Decs_muchas decs);
 
 	void procesa(Decs_una decs);
+	
+	void procesa(DecVar decVar);
+	
+	void procesa(DecProc decProc);
 
 	void procesa(Div exp);
 
@@ -79,8 +88,6 @@ public interface Procesamiento {
 	void procesa(Suma exp);
 
 	void procesa(Prog prog);
-
-	void procesa(Decs_vacia dec_vacia);
 
 	void procesa(TipoInt tipoInt);
 
@@ -179,5 +186,17 @@ public interface Procesamiento {
 	void procesa(Dref dref);
 
 	void procesa(PForm pForm);
+
+	void recolecta_procs(Decs_una decs_una);
+
+	void recolecta_procs(Decs_vacia decs_vacia);
+
+	void recolecta_procs(Decs_muchas decs_muchas);
+
+	void recolecta_procs(DecVar decVar);
+
+	void recolecta_procs(DecTipo decTipo);
+
+	void recolecta_procs(DecProc decProc);
 
 }

@@ -632,7 +632,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 	public void procesa(Acc acc) {
 		acc.e1().procesa(this);
 		// int desp = 
-		maquinaP.ponInstruccion(maquinaP.apilaInt(0));
+		maquinaP.ponInstruccion(maquinaP.apilaInt(desp));
 		maquinaP.ponInstruccion(maquinaP.sumaInt());
 	}
 

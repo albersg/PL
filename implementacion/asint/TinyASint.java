@@ -6,7 +6,7 @@ public class TinyASint {
 		INT, REAL, BOOL, STRING, ID, ARRAY, RECORD, POINTER
 	}
 
-	public static abstract class Nodo {
+	public static class Nodo {
 		private int tam;
 		private int tamBase;
 		private int dir;
@@ -18,6 +18,13 @@ public class TinyASint {
 		private Nodo vinculo;
 		private boolean esParamRef;
 		
+		public Nodo(Dec dec) {
+			this.vinculo = dec;
+		}
+		
+		public Nodo() {
+		}
+
 		public int getTam() {
 			return tam;
 		}
@@ -44,6 +51,9 @@ public class TinyASint {
 		}
 		public Nodo getVinculo() {
 			return vinculo;
+		}
+		public void setVinculo(Nodo vinculo) {
+			this.vinculo = vinculo;
 		}
 		public boolean getEsParamRef() {
 			return esParamRef;
@@ -408,7 +418,7 @@ public class TinyASint {
 
 	// Parametros Formales
 	
-	public static abstract class PForm extends Nodo{
+	public static abstract class PForm extends Dec{
 		private StringLocalizado id;
 		private Tipo tipo;
 		
@@ -425,7 +435,6 @@ public class TinyASint {
 		public Tipo tipo() {
 			return tipo;
 		}
-		
 		
 		public abstract void procesa(Procesamiento p);
 	}
@@ -451,6 +460,12 @@ public class TinyASint {
 		
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) {
+			// TODO Auto-generated method stub
+			
 		}
 
 		

@@ -231,7 +231,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 		asig.e2().procesa(this);
 		
 		if(asig.e1().getTipo() == tNodo.REAL && asig.e2().getTipo() == tNodo.INT) {
-			if(asig.e1().getEsDesig())
+			if(asig.e2().getEsDesig())
 				maquinaP.ponInstruccion(maquinaP.apilaInd());
 			
 			maquinaP.ponInstruccion(maquinaP.int2real());
@@ -240,7 +240,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 		else {
 			if(asig.e2().getEsDesig())
 				maquinaP.ponInstruccion(maquinaP.mueve(asig.e2().getTam()));
-			maquinaP.ponInstruccion(maquinaP.desapilaInd());
+			else maquinaP.ponInstruccion(maquinaP.desapilaInd());
 		}
 	}
 
@@ -630,7 +630,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Acc acc) {
-		acc.e1().procesa(this);
+		acc.e().procesa(this);
 		// int desp = 
 		maquinaP.ponInstruccion(maquinaP.apilaInt(desp));
 		maquinaP.ponInstruccion(maquinaP.sumaInt());
@@ -649,7 +649,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Dref dref) {
-		dref.e1().procesa(this);
+		dref.e().procesa(this);
 		maquinaP.ponInstruccion(maquinaP.apilaInd());
 	}
 

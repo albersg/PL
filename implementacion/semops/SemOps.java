@@ -20,10 +20,7 @@ public class SemOps extends TinyASint {
 		throw new UnsupportedOperationException("exp " + op);
 	}
 
-	public Prog prog(Exp exp, Decs decs) {
-		if (decs == null)
-			return prog_sin_decs(exp);
-		else
-			return prog_con_decs(exp, decs);
+	public Prog prog(Decs decs, Is is) {
+		return prog(decs, is);
 	}
 }

@@ -46,6 +46,12 @@ public class TinyASint {
 		public int getEtqSig() {
 			return etqSig;
 		}
+		public void setEtqInic(int v) {
+			this.etqInic = v;
+		}
+		public void setEtqSig(int v) {
+			this.etqSig= v;
+		}
 		public boolean getEsDesig() {
 			return esDesig;
 		}
@@ -1371,28 +1377,17 @@ public class TinyASint {
 	}
 	
 	private static abstract class ExpMemoria extends Exp {
-		private Exp e1;
-		private Exp e2;
 		private StringLocalizado s;
+		private Exp e;
 		
-		public ExpMemoria(Exp e1, StringLocalizado s) {
+		public ExpMemoria(Exp e, StringLocalizado s) {
 			super();
-			this.e1 = e1;
+			this.e = e;
 			this.s = s;
 		}
 		
-		public ExpMemoria(Exp e1, Exp e2) {
-			super();
-			this.e1 = e1;
-			this.e2 = e2;
-		}
-		
-		public Exp e1() {
-			return e1;
-		}
-		
-		public Exp e2() {
-			return e2;
+		public Exp e() {
+			return e;
 		}
 		
 		public StringLocalizado s() {
@@ -1416,10 +1411,27 @@ public class TinyASint {
 		}	
 	}
 	
-	public static class Indx extends ExpMemoria{
-
+	public static class Indx extends Exp{
+		private Exp e1;
+		private Exp e2;
+		
 		public Indx(Exp e1, Exp e2) {
-			super(e1,e2);
+			super();
+			this.e1 = e1;
+			this.e2 = e2;
+		}
+		
+		public Exp e1() {
+			return e1;
+		}
+		
+		public Exp e2() {
+			return e2;
+		}
+		
+
+		public final int prioridad() {
+			return 5;
 		}
 		
 		@Override
@@ -1534,6 +1546,213 @@ public class TinyASint {
 		return new TipoPointer(t);
 	}
 	
+	public PForms pForms() {
+		return new PForms();
+	}
+	
+	public PFormRef pFormRef(StringLocalizado id, Tipo t) {
+		return new PFormRef(id, t);
+	}
+	
+	public PForm_vacia pForm_vacia() {
+		return new PForm_vacia();
+	}
+	
+	public PForm_una pForm_una(PForm pform) {
+		return new PForm_una(pform);
+	}
+
+	public PForm_muchas pForm_muchas(PForms pforms, PForm pform) {
+		return new PForm_muchas(pforms, pform);
+	}
+	
+	public Is_vacia is_vacia() {
+		return new Is_vacia();
+	}
+	
+	public Is_una is_una(I i) {
+		return new Is_una(i);
+	}
+	
+	public Is_muchas is_muchas(Is is, I i) {
+		return new Is_muchas(is, i);
+	}
+	
+	public Asig asig(Exp e0, Exp e1) {
+		return new Asig(e0,e1);
+	}
+	
+	public If_then if_then(Exp e, Is is) {
+		return new If_then(e,is);
+	}
+	
+	public If_then_else if_then_else (Exp e, Is is0, Is is1) {
+		return new If_then_else(e,is0,is1);
+	}
+	
+	public While while1(Exp e, Is is) {
+		return new While(e,is);
+	}
+	
+	public Read read(Exp e) {
+		return new Read(e);
+	}
+		
+	public Write write(Exp e) {
+		return new Write(e);
+	}
+	
+	public Nl nl() {
+		return new Nl();
+	}
+	
+	public New new1(Exp e) {
+		return new New(e);
+	}
+	
+	public Delete delete(Exp e) {
+		return new Delete(e);
+	}
+	
+	public Call call(Exp e, PReals preals) {
+		return new Call(e, preals);
+	}
+	
+	public IComp iComp(Decs decs, Is is) {
+		return new IComp(decs, is);
+	}
+	
+	public Campo campo(Tipo t, StringLocalizado s) {
+		return new Campo(t, s);
+	}
+	
+	public Campos_uno campos_uno(Campo c) {
+		return new Campos_uno(c);
+	}
+	
+	public Campos_muchos campos_muchos(Campos cs, Campo c) {
+		return new Campos_muchos(cs, c);
+	}
+	
+	public PReals preals() {
+		return new PReals();
+	}
+	
+	public PReal_ninguno pReal_ninguno() {
+		return new PReal_ninguno();
+	}
+	
+	public PReal_uno pReal_uno(PReal preal) {
+		return new PReal_uno(preal);
+	}
+
+	public PReal_muchos pReal_muchos(PReals preals, PReal preal) {
+		return new PReal_muchos(preals, preal);
+	}
+	
+	public LitInt litInt(StringLocalizado s) {
+		return new LitInt(s);
+	}
+	
+	public LitReal LiReal(StringLocalizado s) {
+		return new LitReal(s);
+	}
+	
+	public LitStr LitStr(StringLocalizado s) {
+		return new LitStr(s);
+	}
+	
+	public True true1() {
+		return new True();
+	}
+	
+	public False false1() {
+		return new False();
+	}
+	
+	public Id id(StringLocalizado s) {
+		return new Id(s);
+	}
+	
+	public Null null1() {
+		return new Null();
+	}
+	
+	public Menor menor(Exp e0, Exp e1) {
+		return new Menor(e0,e1);
+	}
+	
+	public Mayor mayor(Exp e0, Exp e1) {
+		return new Mayor(e0,e1);
+	}
+	
+	public MenorIgual menorIgual(Exp e0, Exp e1) {
+		return new MenorIgual(e0,e1);
+	}
+	
+	public MayorIgual mayorIgual(Exp e0, Exp e1) {
+		return new MayorIgual(e0,e1);
+	}
+	
+	public Igual igual(Exp e0, Exp e1) {
+		return new Igual(e0,e1);
+	}
+	
+	public Distinto distinto(Exp e0, Exp e1) {
+		return new Distinto(e0,e1);
+	}
+	
+	public Suma suma(Exp e0, Exp e1) {
+		return new Suma(e0,e1);
+	}
+	
+	public Resta resta(Exp e0, Exp e1) {
+		return new Resta(e0,e1);
+	}
+	
+	public Div div(Exp e0, Exp e1) {
+		return new Div(e0,e1);
+	}
+	
+	public Mul mul(Exp e0, Exp e1) {
+		return new Mul(e0, e1);
+	}
+	
+	public And and(Exp e0, Exp e1) {
+		return new And(e0,e1);
+	}
+	
+	public Or or(Exp e0, Exp e1) {
+		return new Or(e0,e1);
+	}
+	
+	public Modulo mod(Exp e0, Exp e1) {
+		return new Modulo(e0,e1);
+	}
+	
+	public Negativo negativo(Exp e) {
+		return new Negativo(e);
+	}
+	
+	public Not not(Exp e) {
+		return new Not(e);
+	}
+	
+	public Acc acc(Exp e, StringLocalizado s) {
+		return new Acc(e,s);
+	}
+	
+	public Dref dref(Exp e, StringLocalizado s) {
+		return new Dref(e,s);
+	}
+	
+	public Indx indx(Exp e0, Exp e1) {
+		return new Indx(e0,e1);
+	}
+	
+	public StringLocalizado stringLocalizado(String s, int fila, int col) {
+		return new StringLocalizado(s,fila,col);
+	}
 }
 
 

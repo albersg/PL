@@ -41,7 +41,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 	}
 	
 	private boolean id_duplicado(StringLocalizado id) {
-		if(ts.peek().containsKey(id.toString()))
+		if(ts.peek().containsKey(id))
 			return true;
 		return false;
 	}
@@ -326,19 +326,18 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Acc acc) {
-		acc.e1()
+		acc.e().procesa(this);
 	}
 
 	@Override
 	public void procesa(Indx indx) {
-		// TODO Auto-generated method stub
-
+		indx.e1().procesa(this);
+		indx.e2().procesa(this);
 	}
 
 	@Override
 	public void procesa(Dref dref) {
-		// TODO Auto-generated method stub
-
+		dref.e().procesa(this);
 	}
 
 
@@ -354,18 +353,137 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(DecVar decVar) {
-		// TODO Auto-generated method stub
-
+		decVar.tipo().procesa(this);
+		recolecta(decVar.id(), decVar);
+	}
+	
+	@Override
+	public void procesa(DecTipo decTipo) {
+		decTipo.tipo().procesa(this);
+		recolecta(decTipo.id(), decTipo);
 	}
 
 	@Override
 	public void procesa(DecProc decProc) {
-		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public void vincula2(IComp iComp) {
+		iComp.decs().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(DecProc decProc) {
+		
+	}
+
+	@Override
+	public void vincula2(DecTipo decTipo) {
+		decTipo.tipo().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(DecVar decVar) {
+		decVar.tipo().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(Decs_una decs_una) {
+		decs_una.dec().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(Decs_muchas decs_muchas) {
+		decs_muchas.decs().vincula2(this);
+		decs_muchas.dec().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(Decs_vacia decs_vacia) {
+		
+	}
+
+	@Override
+	public void vincula2(PFormRef pFormRef) {
+		pFormRef.tipo().vincula2(this);
+	}
+	
+	@Override
+	public void vincula2(TipoRef tipoRef) {
+		
+	}
+
+	@Override
+	public void vincula2(TipoInt tipoInt) {
+		
+	}
+
+	@Override
+	public void vincula2(TipoReal tipoReal) {
+		
+	}
+
+	@Override
+	public void vincula2(TipoBool tipoBool) {
+		
+	}
+
+	@Override
+	public void vincula2(TipoString tipoString) {
+		
+	}
+
+	@Override
+	public void vincula2(TipoArray tipoArray) {
+		tipoArray.tipo().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(TipoRecord tipoRecord) {
+		tipoRecord.campos().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(TipoPointer tipoPointer) {
+		if(tipoPointer.tipo().esRef())
+			tipoPointer.tipo().procesa(this);
+		else
+			tipoPointer.tipo().vincula2(this);
+	}
+	
+	@Override
+	public void vincula2(Campos_uno campos_uno) {
+		campos_uno.campo().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(Campos_muchos campos_muchos) {
+		campos_muchos.campos().vincula2(this);
+		campos_muchos.campo().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(Campo campo) {
+		campo.tipo().vincula2(this);
+	}
+	
+	@Override
+	public void vincula2(PForm_una pForm_una) {
+		pForm_una.pform().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(PForm_muchas pForm_muchas) {
+		pForm_muchas.pforms().vincula2(this);
+		pForm_muchas.pform().vincula2(this);
+	}
+
+	@Override
+	public void vincula2(PForm_vacia pForm_vacia) {
+		
+	}		
+
 
 }
 
-
-
-}

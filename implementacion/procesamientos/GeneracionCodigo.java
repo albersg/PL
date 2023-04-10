@@ -7,10 +7,6 @@ import implementacion.asint.TinyASint.Acc;
 import implementacion.asint.TinyASint.And;
 import implementacion.asint.TinyASint.Asig;
 import implementacion.asint.TinyASint.Call;
-import implementacion.asint.TinyASint.Campo;
-import implementacion.asint.TinyASint.Campos_muchos;
-import implementacion.asint.TinyASint.Campos_uno;
-import implementacion.asint.TinyASint.Dec;
 import implementacion.asint.TinyASint.DecProc;
 import implementacion.asint.TinyASint.DecTipo;
 import implementacion.asint.TinyASint.Decs_muchas;
@@ -30,7 +26,6 @@ import implementacion.asint.TinyASint.Igual;
 import implementacion.asint.TinyASint.Indx;
 import implementacion.asint.TinyASint.Is_muchas;
 import implementacion.asint.TinyASint.Is_una;
-import implementacion.asint.TinyASint.Is_vacia;
 import implementacion.asint.TinyASint.LitInt;
 import implementacion.asint.TinyASint.LitReal;
 import implementacion.asint.TinyASint.LitStr;
@@ -47,28 +42,17 @@ import implementacion.asint.TinyASint.Not;
 import implementacion.asint.TinyASint.Null;
 import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
-import implementacion.asint.TinyASint.PFormRef;
 import implementacion.asint.TinyASint.PForm_muchas;
 import implementacion.asint.TinyASint.PForm_una;
-import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReal;
 import implementacion.asint.TinyASint.PReal_muchos;
-import implementacion.asint.TinyASint.PReal_ninguno;
 import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
 import implementacion.asint.TinyASint.Resta;
 import implementacion.asint.TinyASint.Suma;
-import implementacion.asint.TinyASint.TipoArray;
-import implementacion.asint.TinyASint.TipoBool;
-import implementacion.asint.TinyASint.TipoInt;
-import implementacion.asint.TinyASint.TipoPointer;
-import implementacion.asint.TinyASint.TipoReal;
-import implementacion.asint.TinyASint.TipoRecord;
-import implementacion.asint.TinyASint.TipoRef;
-import implementacion.asint.TinyASint.TipoString;
 import implementacion.asint.TinyASint.True;
 import implementacion.asint.TinyASint.While;
 import implementacion.asint.TinyASint.Write;
@@ -632,7 +616,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 	public void procesa(Acc acc) {
 		acc.e().procesa(this);
 		// int desp = 
-		maquinaP.ponInstruccion(maquinaP.apilaInt(desp));
+		//maquinaP.ponInstruccion(maquinaP.apilaInt(desp));
 		maquinaP.ponInstruccion(maquinaP.sumaInt());
 	}
 

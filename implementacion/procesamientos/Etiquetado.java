@@ -7,10 +7,6 @@ import implementacion.asint.TinyASint.Acc;
 import implementacion.asint.TinyASint.And;
 import implementacion.asint.TinyASint.Asig;
 import implementacion.asint.TinyASint.Call;
-import implementacion.asint.TinyASint.Campo;
-import implementacion.asint.TinyASint.Campos_muchos;
-import implementacion.asint.TinyASint.Campos_uno;
-import implementacion.asint.TinyASint.Dec;
 import implementacion.asint.TinyASint.DecProc;
 import implementacion.asint.TinyASint.DecTipo;
 import implementacion.asint.TinyASint.Decs_muchas;
@@ -30,7 +26,6 @@ import implementacion.asint.TinyASint.Igual;
 import implementacion.asint.TinyASint.Indx;
 import implementacion.asint.TinyASint.Is_muchas;
 import implementacion.asint.TinyASint.Is_una;
-import implementacion.asint.TinyASint.Is_vacia;
 import implementacion.asint.TinyASint.LitInt;
 import implementacion.asint.TinyASint.LitReal;
 import implementacion.asint.TinyASint.LitStr;
@@ -47,33 +42,21 @@ import implementacion.asint.TinyASint.Not;
 import implementacion.asint.TinyASint.Null;
 import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
-import implementacion.asint.TinyASint.PFormRef;
 import implementacion.asint.TinyASint.PForm_muchas;
 import implementacion.asint.TinyASint.PForm_una;
-import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReal;
 import implementacion.asint.TinyASint.PReal_muchos;
-import implementacion.asint.TinyASint.PReal_ninguno;
 import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
 import implementacion.asint.TinyASint.Resta;
 import implementacion.asint.TinyASint.Suma;
-import implementacion.asint.TinyASint.TipoArray;
-import implementacion.asint.TinyASint.TipoBool;
-import implementacion.asint.TinyASint.TipoInt;
-import implementacion.asint.TinyASint.TipoPointer;
-import implementacion.asint.TinyASint.TipoReal;
-import implementacion.asint.TinyASint.TipoRecord;
-import implementacion.asint.TinyASint.TipoRef;
-import implementacion.asint.TinyASint.TipoString;
 import implementacion.asint.TinyASint.True;
 import implementacion.asint.TinyASint.While;
 import implementacion.asint.TinyASint.Write;
 import implementacion.asint.TinyASint.tNodo;
-import implementacion.maquinaP.MaquinaP;
 
 public class Etiquetado extends ProcesamientoPorDefecto{
 	
@@ -311,36 +294,40 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Nl nl) {
-		maquinaP.ponInstruccion(maquinaP.apilaString("\n"));
-		maquinaP.ponInstruccion(maquinaP.write());
+		nl.setEtqInic(etq);
+		etq += 2;
+		nl.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(New new1) {
+		new1.setEtqInic(etq);
 		new1.e().procesa(this);
-		maquinaP.ponInstruccion(maquinaP.alloc(new1.e().getTamBase()));
-		maquinaP.ponInstruccion(maquinaP.desapilaInd());
+		etq += 2;
+		new1.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Delete delete) {
+		delete.setEtqInic(etq);
 		delete.e().procesa(this);
-		maquinaP.ponInstruccion(maquinaP.apilaInd());
-		maquinaP.ponInstruccion(maquinaP.dealloc(delete.e().getTamBase()));
+		etq += 2;
+		delete.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Call call) {
-		maquinaP.ponInstruccion(maquinaP.activa(call.getVinculo().getNivel(), call.getVinculo().getTam(), call.getEtqSig()));
-		gen_cod_params(call.preals(), ((DecProc) call.getVinculo()).pf());
-		maquinaP.ponInstruccion(maquinaP.desapilad(call.getVinculo().getNivel()));
-		maquinaP.ponInstruccion(maquinaP.irA(call.getVinculo().getEtqInic()));
+		call.setEtqInic(etq);
+		etq++;
+		etiqueta_params(call.preals(), ((DecProc) call.getVinculo()).pf());
+		etq += 2;
+		call.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(IComp iComp) {
-		maquinaP.ponInstruccion(maquinaP.activa(iComp.getNivel(), iComp.getTam(), iComp.getEtqSig()));
-		maquinaP.ponInstruccion(maquinaP.desapilad(iComp.getNivel()));
+		iComp.setEtqInic(etq);
+		etq+= 2;
 		
 		iComp.is().procesa(this);
 		iComp.decs().recolecta_procs(this);
@@ -350,325 +337,369 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 			p.procesa(this);
 		}	
 		
-		maquinaP.ponInstruccion(maquinaP.desactiva(iComp.getNivel(), iComp.getTam()));
-		maquinaP.ponInstruccion(maquinaP.irInd());
+		etq += 2;
+		iComp.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(PReals pReals) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void procesa(LitInt litInt) {
-		maquinaP.ponInstruccion(maquinaP.apilaInt(Integer.valueOf(litInt.s().toString())));
+		litInt.setEtqInic(etq);
+		etq++;
+		litInt.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(LitReal litReal) {
-		maquinaP.ponInstruccion(maquinaP.apilaReal(Float.valueOf(litReal.s().toString())));		
+		litReal.setEtqInic(etq);
+		etq++;
+		litReal.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(LitStr litStr) {
-		maquinaP.ponInstruccion(maquinaP.apilaString(litStr.s().toString()));
+		litStr.setEtqInic(etq);
+		etq++;
+		litStr.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(True true1) {
-		maquinaP.ponInstruccion(maquinaP.apilaBool(true));		
+		true1.setEtqInic(etq);
+		etq++;
+		true1.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Null null1) {
-		maquinaP.ponInstruccion(maquinaP.apilaInt(-1));
+		null1.setEtqInic(etq);
+		etq++;
+		null1.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Menor menor) {
+		menor.setEtqInic(etq);
 		// Primer argumento
 		menor.arg0().procesa(this);
 		if(menor.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(menor.getTipo() == tNodo.REAL && menor.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		menor.arg1().procesa(this);
 		if(menor.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(menor.getTipo() == tNodo.REAL && menor.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(menor.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.menorInt());
+			etq++;
 		else if(menor.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.menorReal());	
+			etq++;
 		else if(menor.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.menorString());
+			etq++;
 		else if(menor.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.menorBool());
+			etq++;
+		
+		menor.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Mayor mayor) {
+		mayor.setEtqInic(etq);
 		// Primer argumento
 		mayor.arg0().procesa(this);
 		if(mayor.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(mayor.getTipo() == tNodo.REAL && mayor.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		mayor.arg1().procesa(this);
 		if(mayor.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(mayor.getTipo() == tNodo.REAL && mayor.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(mayor.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.mayorInt());
+			etq++;
 		else if(mayor.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.mayorReal());	
+			etq++;
 		else if(mayor.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.mayorString());
+			etq++;
 		else if(mayor.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.mayorBool());
+			etq++;
+		
+		mayor.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(False false1) {
-		maquinaP.ponInstruccion(maquinaP.apilaBool(false));				
+		false1.setEtqInic(etq);
+		etq++;
+		false1.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(MayorIgual mayorIgual) {
+		mayorIgual.setEtqInic(etq);
 		// Primer argumento
 		mayorIgual.arg0().procesa(this);
 		if(mayorIgual.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(mayorIgual.getTipo() == tNodo.REAL && mayorIgual.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		mayorIgual.arg1().procesa(this);
 		if(mayorIgual.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(mayorIgual.getTipo() == tNodo.REAL && mayorIgual.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(mayorIgual.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.mayorIgualInt());
+			etq++;
 		else if(mayorIgual.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.mayorIgualReal());	
+			etq++;
 		else if(mayorIgual.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.mayorIgualString());
+			etq++;
 		else if(mayorIgual.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.mayorIgualBool());
+			etq++;
+		
+		mayorIgual.setEtqSig(etq);
 	}
 	
 
 	@Override
 	public void procesa(Igual igual) {
+		igual.setEtqInic(etq);
 		// Primer argumento
 		igual.arg0().procesa(this);
 		if(igual.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(igual.getTipo() == tNodo.REAL && igual.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		igual.arg1().procesa(this);
 		if(igual.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(igual.getTipo() == tNodo.REAL && igual.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(igual.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.igualInt());
+			etq++;
 		else if(igual.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.igualReal());	
+			etq++;	
 		else if(igual.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.igualString());
+			etq++;
 		else if(igual.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.igualBool());
+			etq++;
+		igual.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Distinto distinto) {
+		distinto.setEtqInic(etq);
 		// Primer argumento
 		distinto.arg0().procesa(this);
 		if(distinto.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(distinto.getTipo() == tNodo.REAL && distinto.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		distinto.arg1().procesa(this);
 		if(distinto.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(distinto.getTipo() == tNodo.REAL && distinto.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(distinto.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.distintoInt());
+			etq++;
 		else if(distinto.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.distintoReal());	
+			etq++;
 		else if(distinto.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.distintoString());
+			etq++;
 		else if(distinto.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.distintoBool());
+			etq++;
+		
+		distinto.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(MenorIgual menorIgual) {
+		menorIgual.setEtqInic(etq);
 		// Primer argumento
 		menorIgual.arg0().procesa(this);
 		if(menorIgual.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(menorIgual.getTipo() == tNodo.REAL && menorIgual.arg0().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 			
 		// Segundo argumento
 		menorIgual.arg1().procesa(this);
 		if(menorIgual.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		if(menorIgual.getTipo() == tNodo.REAL && menorIgual.arg1().getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.int2real());
+			etq++;
 		
 		// Generación de instrucción comparativa
 		if(menorIgual.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.menorIgualInt());
+			etq++;
 		else if(menorIgual.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.menorIgualReal());	
+			etq++;
 		else if(menorIgual.getTipo() == tNodo.STRING)
-			maquinaP.ponInstruccion(maquinaP.menorIgualString());
+			etq++;
 		else if(menorIgual.getTipo() == tNodo.BOOL)
-			maquinaP.ponInstruccion(maquinaP.menorIgualBool());	
+			etq++;
+		
+		menorIgual.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(And and) {
+		and.setEtqInic(etq);
 		// Primer argumento
 		and.arg0().procesa(this);
 		if(and.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 			
 		// Segundo argumento
 		and.arg1().procesa(this);
 		if(and.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		
 		// Generación de instrucción comparativa
-		maquinaP.ponInstruccion(maquinaP.and());
+		etq++;
+		
+		and.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Or or) {
+		or.setEtqInic(etq);
 		// Primer argumento
 		or.arg0().procesa(this);
 		if(or.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 			
 		// Segundo argumento
 		or.arg1().procesa(this);
 		if(or.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		
 		// Generación de instrucción comparativa
-		maquinaP.ponInstruccion(maquinaP.or());		
+		etq++;
+		or.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Modulo modulo) {
+		modulo.setEtqInic(etq);
 		// Primer argumento
 		modulo.arg0().procesa(this);
 		if(modulo.arg0().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 			
 		// Segundo argumento
 		modulo.arg1().procesa(this);
 		if(modulo.arg1().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 		
 		// Generación de instrucción comparativa
-		maquinaP.ponInstruccion(maquinaP.mod());				
+		etq++;
+		
+		modulo.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Negativo negativo) {
+		negativo.setEtqInic(etq);
 		// Primer argumento
 		negativo.e().procesa(this);
 		if(negativo.e().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 			
 		// Generación de instrucción comparativa
 		if(negativo.getTipo() == tNodo.INT)
-			maquinaP.ponInstruccion(maquinaP.negativoInt());
+			etq++;
 		else if(negativo.getTipo() == tNodo.REAL)
-			maquinaP.ponInstruccion(maquinaP.negativoReal());
+			etq++;
+		
+		negativo.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Not not) {
+		not.setEtqInic(etq);
 		// Primer argumento
 		not.e().procesa(this);
 		if(not.e().getEsDesig()) {
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
+			etq++;
 		}
 			
 		// Generación de instrucción comparativa
-		maquinaP.ponInstruccion(maquinaP.not());
+		etq++;
+		not.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Acc acc) {
+		acc.setEtqInic(etq);
 		acc.e().procesa(this);
 		// int desp = 
-		maquinaP.ponInstruccion(maquinaP.apilaInt(0));
-		maquinaP.ponInstruccion(maquinaP.sumaInt());
+		etq += 2;
+		acc.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Indx indx) {
+		indx.setEtqInic(etq);
 		indx.e1().procesa(this);
 		indx.e2().procesa(this);
 		if(indx.e1().getEsDesig())
-			maquinaP.ponInstruccion(maquinaP.apilaInd());
-		maquinaP.ponInstruccion(maquinaP.apilaInt(indx.e1().getTamBase()));
-		maquinaP.ponInstruccion(maquinaP.mulInt());
-		maquinaP.ponInstruccion(maquinaP.sumaInt());
+			etq++;
+		etq+=3;
+		indx.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Dref dref) {
+		dref.setEtqInic(etq);
 		dref.e().procesa(this);
-		maquinaP.ponInstruccion(maquinaP.apilaInd());
+		etq++;
+		dref.setEtqSig(etq);
 	}
 
 	/*private void gen_cod_params(PReal_ninguno preals, PForm_vacia pfs) {
@@ -684,25 +715,23 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		gen_cod_paso(preals.preal(), pfs.pform());
 	}*/
 	
-	private void gen_cod_params(PReals preals, PForms pfs) {
+	private void etiqueta_params(PReals preals, PForms pfs) {
 		if(preals.varias() && pfs.varias()) {
-			gen_cod_params(((PReal_muchos) preals).preals(), ((PForm_muchas) pfs).pforms());
-			gen_cod_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
+			etiqueta_params(((PReal_muchos) preals).preals(), ((PForm_muchas) pfs).pforms());
+			etiqueta_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
 		}
 		else if(!preals.varias() && !pfs.varias()){
-			gen_cod_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
+			etiqueta_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
 		}
 	}
 	
-	private void gen_cod_paso(PReal preal, PForm pf) {
-		maquinaP.ponInstruccion(maquinaP.dup());
-		maquinaP.ponInstruccion(maquinaP.apilaInt(pf.getDir()));
-		maquinaP.ponInstruccion(maquinaP.sumaInt());
+	private void etiqueta_paso(PReal preal, PForm pf) {
+		etq+=3;
 		preal.procesa(this);
 		if(preal.getEsDesig() && !pf.getEsParamRef())
-			maquinaP.ponInstruccion(maquinaP.mueve(pf.getTam()));
+			etq++;
 		else
-			maquinaP.ponInstruccion(maquinaP.desapilaInd());
+			etq++;
 	}
 
 	@Override

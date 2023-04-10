@@ -102,6 +102,7 @@ public class TinyASint {
 
 		public abstract void procesa(Procesamiento p);
 		public abstract void recolecta_procs(Procesamiento p);
+		public abstract void vincula2(Procesamiento p);
 	}
 
 	public static abstract class Decs extends Nodo {
@@ -110,6 +111,7 @@ public class TinyASint {
 
 		public abstract void procesa(Procesamiento p);
 		public abstract void recolecta_procs(Procesamiento p);
+		public abstract void vincula2(Procesamiento p);
 	}
 	
 	public static class Decs_vacia extends Decs {
@@ -124,6 +126,11 @@ public class TinyASint {
 		@Override
 		public void recolecta_procs(Procesamiento p) {
 			p.recolecta_procs(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 
@@ -153,6 +160,11 @@ public class TinyASint {
 		public void recolecta_procs(Procesamiento p) {
 			p.recolecta_procs(this);
 		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 
 	public static class Decs_una extends Decs {
@@ -174,6 +186,11 @@ public class TinyASint {
 		@Override
 		public void recolecta_procs(Procesamiento p) {
 			p.recolecta_procs(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 
@@ -204,6 +221,11 @@ public class TinyASint {
 		public void recolecta_procs(Procesamiento p) {
 			p.recolecta_procs(this);
 		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 
 	public static class DecTipo extends Dec {
@@ -232,6 +254,11 @@ public class TinyASint {
 		@Override
 		public void recolecta_procs(Procesamiento p) {
 			p.recolecta_procs(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 
@@ -275,6 +302,11 @@ public class TinyASint {
 			p.recolecta_procs(this);
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);			
+		}
+
 	}
 
 	
@@ -284,8 +316,10 @@ public class TinyASint {
 		public Tipo() {
 
 		}
-
+		
+		public abstract boolean esRef();
 		public abstract void procesa(Procesamiento p);
+		public abstract void vincula2(Procesamiento p);
 	}
 
 	public static class TipoInt extends Tipo {
@@ -297,6 +331,16 @@ public class TinyASint {
 		@Override
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
 		}
 
 	}
@@ -312,6 +356,16 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
+		}
+
 	}
 
 	public static class TipoBool extends Tipo {
@@ -325,6 +379,16 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
+		}
+
 	}
 
 	public static class TipoString extends Tipo {
@@ -336,6 +400,16 @@ public class TinyASint {
 		@Override
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
 		}
 
 	}
@@ -355,6 +429,16 @@ public class TinyASint {
 		@Override
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return true;
 		}
 
 	}
@@ -382,6 +466,16 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
+		}
+
 	}
 	
 	public static class TipoRecord extends Tipo {
@@ -401,6 +495,16 @@ public class TinyASint {
 			p.procesa(this);
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
+		}
+
 	}
 	
 	public static class TipoPointer extends Tipo {
@@ -418,6 +522,16 @@ public class TinyASint {
 		@Override
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
+		@Override
+		public boolean esRef() {
+			return false;
 		}
 
 	}
@@ -443,6 +557,7 @@ public class TinyASint {
 		}
 		
 		public abstract void procesa(Procesamiento p);
+		public abstract void vincula2(Procesamiento p);
 	}
 	
 	public static class PForms extends Nodo{
@@ -456,6 +571,11 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+		
 	}
 	
 	public static class PFormRef extends PForm{
@@ -474,6 +594,11 @@ public class TinyASint {
 			
 		}
 
+		@Override
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
+
 		
 	}
 	
@@ -484,6 +609,10 @@ public class TinyASint {
 		
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 
@@ -512,6 +641,10 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 
 	public static class PForm_una extends PForms {
@@ -528,6 +661,10 @@ public class TinyASint {
 
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 	
@@ -818,6 +955,10 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 	
 	// Campos
@@ -843,6 +984,10 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 	
 	public static abstract class Campos extends Nodo{
@@ -853,6 +998,7 @@ public class TinyASint {
 
 		
 		public abstract void procesa(Procesamiento p);
+		public abstract void vincula2(Procesamiento p);
 	}
 
 	public static class Campos_muchos extends Campos {
@@ -876,6 +1022,10 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
+		}
 	}
 
 	public static class Campos_uno extends Campos {
@@ -892,6 +1042,10 @@ public class TinyASint {
 
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
+		}
+
+		public void vincula2(Procesamiento p) {
+			p.vincula2(this);
 		}
 	}
 	

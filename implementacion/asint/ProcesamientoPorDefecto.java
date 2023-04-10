@@ -45,6 +45,9 @@ import implementacion.asint.TinyASint.Null;
 import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
 import implementacion.asint.TinyASint.PFormRef;
+import implementacion.asint.TinyASint.PForm_muchas;
+import implementacion.asint.TinyASint.PForm_una;
+import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
@@ -425,6 +428,12 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void procesa(DecTipo decTipo) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void procesa(DecProc decProc) {
@@ -467,5 +476,145 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void vincula2(IComp iComp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(DecProc decProc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(DecTipo decTipo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(DecVar decVar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(Decs_una decs_una) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(Decs_muchas decs_muchas) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(Decs_vacia decs_vacia) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(PFormRef pFormRef) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoRef tipoRef) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoInt tipoInt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoReal tipoReal) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoBool tipoBool) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoString tipoString) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoArray tipoArray) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoRecord tipoRecord) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(TipoPointer tipoPointer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void vincula2(Campos_uno campos_uno) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(Campos_muchos campos_muchos) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(Campo campo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(PForm_una pForm_una) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(PForm_muchas pForm_muchas) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(PForm_vacia pForm_vacia) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vincula2(PForms pForms) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

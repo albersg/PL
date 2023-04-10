@@ -45,6 +45,9 @@ import implementacion.asint.TinyASint.Null;
 import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
 import implementacion.asint.TinyASint.PFormRef;
+import implementacion.asint.TinyASint.PForm_muchas;
+import implementacion.asint.TinyASint.PForm_una;
+import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
@@ -76,6 +79,8 @@ public interface Procesamiento {
 	void procesa(DecVar decVar);
 	
 	void procesa(DecProc decProc);
+	
+	void procesa(DecTipo decTipo);
 
 	void procesa(Div exp);
 
@@ -198,5 +203,51 @@ public interface Procesamiento {
 	void recolecta_procs(DecTipo decTipo);
 
 	void recolecta_procs(DecProc decProc);
+
+	void vincula2(IComp iComp);
+
+	void vincula2(DecProc decProc);
+
+	void vincula2(DecTipo decTipo);
+
+	void vincula2(DecVar decVar);
+
+	void vincula2(Decs_una decs_una);
+
+	void vincula2(Decs_muchas decs_muchas);
+
+	void vincula2(Decs_vacia decs_vacia);
+
+	void vincula2(PFormRef pFormRef);
+
+	void vincula2(TipoRef tipoRef);
+
+	void vincula2(TipoInt tipoInt);
+
+	void vincula2(TipoReal tipoReal);
+
+	void vincula2(TipoBool tipoBool);
+
+	void vincula2(TipoString tipoString);
+
+	void vincula2(TipoArray tipoArray);
+
+	void vincula2(TipoRecord tipoRecord);
+
+	void vincula2(TipoPointer tipoPointer);
+
+	void vincula2(Campos_uno campos_uno);
+
+	void vincula2(Campos_muchos campos_muchos);
+
+	void vincula2(Campo campo);
+
+	void vincula2(PForm_una pForm_una);
+
+	void vincula2(PForm_muchas pForm_muchas);
+
+	void vincula2(PForm_vacia pForm_vacia);
+
+	void vincula2(PForms pForms);
 
 }

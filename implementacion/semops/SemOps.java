@@ -1,9 +1,6 @@
 package implementacion.semops;
 
 import implementacion.asint.TinyASint;
-import implementacion.asint.TinyASint.Decs;
-import implementacion.asint.TinyASint.Exp;
-import implementacion.asint.TinyASint.Prog;
 
 public class SemOps extends TinyASint {
 	public Exp exp(char op, Exp arg0, Exp arg1) {

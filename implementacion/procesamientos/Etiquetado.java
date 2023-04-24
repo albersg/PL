@@ -44,36 +44,41 @@ import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
 import implementacion.asint.TinyASint.PForm_muchas;
 import implementacion.asint.TinyASint.PForm_una;
+import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
 import implementacion.asint.TinyASint.PReal;
 import implementacion.asint.TinyASint.PReal_muchos;
+import implementacion.asint.TinyASint.PReal_ninguno;
 import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
 import implementacion.asint.TinyASint.Resta;
 import implementacion.asint.TinyASint.Suma;
+import implementacion.asint.TinyASint.TipoBool;
+import implementacion.asint.TinyASint.TipoInt;
+import implementacion.asint.TinyASint.TipoReal;
+import implementacion.asint.TinyASint.TipoString;
 import implementacion.asint.TinyASint.True;
 import implementacion.asint.TinyASint.While;
 import implementacion.asint.TinyASint.Write;
-import implementacion.asint.TinyASint.tNodo;
 
 public class Etiquetado extends ProcesamientoPorDefecto{
 	
 	private int etq;
 	private Stack<DecProc> procs;
 	
-	public Etiquetado() {
+	public Etiquetado() throws Exception {
 		this.etq = 0;
 		procs = new Stack<DecProc>();
 	}
 	
 	@Override
-	public void procesa(Prog prog) {
+	public void procesa(Prog prog) throws Exception {
 		prog.is().procesa(this);
 		prog.decs().recolecta_procs(this);
 		
-		while(!procs.empty()) {
+		while(!procs.empty())  {
 			DecProc p = procs.pop();
 			p.procesa(this);
 		}
@@ -81,14 +86,14 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	
 
 	@Override
-	public void procesa(Div exp) {
+	public void procesa(Div exp) throws Exception {
 		exp.setEtqInic(etq);
 		// Primer argumento
 		exp.arg0().procesa(this);
 		if(exp.arg0().getEsDesig()) {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg0().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
@@ -96,19 +101,19 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		if(exp.arg1().getEsDesig()) {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg1().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción aritmética
-		if(exp.getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoInt)
 			etq++;
-		else if(exp.getTipo() == tNodo.REAL)
+		else if(exp.getTipo() instanceof TipoReal)
 			etq++;
 		exp.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Id exp) {
+	public void procesa(Id exp) throws Exception {
 		exp.setEtqInic(etq);
 		if(exp.getVinculo().getNivel() == 0)
 			etq++;
@@ -123,14 +128,14 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Mul exp) {
+	public void procesa(Mul exp) throws Exception {
 		exp.setEtqInic(etq);
 		// Primer argumento
 		exp.arg0().procesa(this);
-		if(exp.arg0().getEsDesig()) {
+		if(exp.arg0().getEsDesig())  {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg0().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
@@ -138,92 +143,92 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		if(exp.arg1().getEsDesig()) {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg1().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción aritmética
-		if(exp.getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoInt)
 			etq++;
-		else if(exp.getTipo() == tNodo.REAL)
+		else if(exp.getTipo() instanceof TipoReal)
 			etq++;
 		
 		exp.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Resta exp) {
+	public void procesa(Resta exp) throws Exception {
 		exp.setEtqInic(etq);
 		// Primer argumento
 		exp.arg0().procesa(this);
 		if(exp.arg0().getEsDesig()) {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg0().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		exp.arg1().procesa(this);
-		if(exp.arg1().getEsDesig()) {
+		if(exp.arg1().getEsDesig())  {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg1().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción aritmética
-		if(exp.getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoInt)
 			etq++;
-		else if(exp.getTipo() == tNodo.REAL)
+		else if(exp.getTipo() instanceof TipoReal)
 			etq++;
 		exp.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Suma exp) {
+	public void procesa(Suma exp) throws Exception {
 		exp.setEtqInic(etq);
 		// Primer argumento
 		exp.arg0().procesa(this);
-		if(exp.arg0().getEsDesig()) {
+		if(exp.arg0().getEsDesig()){
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg0().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		exp.arg1().procesa(this);
-		if(exp.arg1().getEsDesig()) {
+		if(exp.arg1().getEsDesig())  {
 			etq++;
 		}
-		if(exp.getTipo() == tNodo.REAL && exp.arg1().getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoReal && exp.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción aritmética
-		if(exp.getTipo() == tNodo.INT)
+		if(exp.getTipo() instanceof TipoInt)
 			etq++;
-		else if(exp.getTipo() == tNodo.REAL)
+		else if(exp.getTipo() instanceof TipoReal)
 			etq++;
 		
 		exp.setEtqSig(etq);
 	}
 	
 	@Override
-	public void procesa(Is_muchas is_muchas) {
+	public void procesa(Is_muchas is_muchas) throws Exception {
 		is_muchas.is().procesa(this);
 		is_muchas.i().procesa(this);
 	}
 
 	@Override
-	public void procesa(Is_una is_una) {
+	public void procesa(Is_una is_una) throws Exception {
 		is_una.i().procesa(this);
 	}
 
 
 	@Override
-	public void procesa(Asig asig) {
+	public void procesa(Asig asig) throws Exception {
 		asig.setEtqInic(etq);
 		asig.e1().procesa(this);
 		asig.e2().procesa(this);
 		
-		if(asig.e1().getTipo() == tNodo.REAL && asig.e2().getTipo() == tNodo.INT) {
+		if(asig.e1().getTipo() instanceof TipoReal && asig.e2().getTipo() instanceof TipoInt)  {
 			if(asig.e2().getEsDesig())
 				etq++;
 			
@@ -236,7 +241,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(If_then if_then) {
+	public void procesa(If_then if_then) throws Exception {
 		if_then.setEtqInic(etq);
 		if_then.e().procesa(this);
 		if(if_then.e().getEsDesig())
@@ -247,7 +252,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(If_then_else if_then_else) {
+	public void procesa(If_then_else if_then_else) throws Exception {
 		if_then_else.setEtqInic(etq);
 		if_then_else.e().procesa(this);
 		
@@ -262,7 +267,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(While wh) {
+	public void procesa(While wh) throws Exception {
 		wh.setEtqInic(etq);
 		wh.e().procesa(this);
 		if(wh.e().getEsDesig())
@@ -275,7 +280,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Read read) {
+	public void procesa(Read read) throws Exception {
 		read.setEtqInic(etq);
 		read.e().procesa(this);
 		etq += 2;
@@ -283,7 +288,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Write write) {
+	public void procesa(Write write) throws Exception {
 		write.setEtqInic(etq);
 		write.e().procesa(this);
 		if(write.e().getEsDesig())
@@ -293,14 +298,14 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Nl nl) {
+	public void procesa(Nl nl) throws Exception {
 		nl.setEtqInic(etq);
 		etq += 2;
 		nl.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(New new1) {
+	public void procesa(New new1) throws Exception {
 		new1.setEtqInic(etq);
 		new1.e().procesa(this);
 		etq += 2;
@@ -308,7 +313,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Delete delete) {
+	public void procesa(Delete delete) throws Exception {
 		delete.setEtqInic(etq);
 		delete.e().procesa(this);
 		etq += 2;
@@ -316,23 +321,28 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Call call) {
+	public void procesa(Call call) throws Exception {
 		call.setEtqInic(etq);
 		etq++;
-		etiqueta_params(call.preals(), ((DecProc) call.getVinculo()).pf());
+		if(call.preals() instanceof PReal_ninguno)
+			etiqueta_params((PReal_ninguno) call.preals(), (PForm_vacia) ((DecProc) call.getVinculo()).pf());
+		else if(call.preals() instanceof PReal_uno)
+			etiqueta_params((PReal_uno) call.preals(), (PForm_una) ((DecProc) call.getVinculo()).pf());
+		else
+			etiqueta_params((PReal_muchos) call.preals(), (PForm_muchas) ((DecProc) call.getVinculo()).pf());
 		etq += 2;
 		call.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(IComp iComp) {
+	public void procesa(IComp iComp) throws Exception {
 		iComp.setEtqInic(etq);
 		etq+= 2;
 		
 		iComp.is().procesa(this);
 		iComp.decs().recolecta_procs(this);
 		
-		while(!procs.empty()) {
+		while(!procs.empty())  {
 			DecProc p = procs.pop();
 			p.procesa(this);
 		}	
@@ -342,54 +352,54 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(PReals pReals) {
+	public void procesa(PReals pReals) throws Exception {
 		
 	}
 
 	@Override
-	public void procesa(LitInt litInt) {
+	public void procesa(LitInt litInt) throws Exception {
 		litInt.setEtqInic(etq);
 		etq++;
 		litInt.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(LitReal litReal) {
+	public void procesa(LitReal litReal) throws Exception {
 		litReal.setEtqInic(etq);
 		etq++;
 		litReal.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(LitStr litStr) {
+	public void procesa(LitStr litStr) throws Exception {
 		litStr.setEtqInic(etq);
 		etq++;
 		litStr.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(True true1) {
+	public void procesa(True true1) throws Exception {
 		true1.setEtqInic(etq);
 		etq++;
 		true1.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Null null1) {
+	public void procesa(Null null1) throws Exception {
 		null1.setEtqInic(etq);
 		etq++;
 		null1.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Menor menor) {
+	public void procesa(Menor menor) throws Exception {
 		menor.setEtqInic(etq);
 		// Primer argumento
 		menor.arg0().procesa(this);
 		if(menor.arg0().getEsDesig()) {
 			etq++;
 		}
-		if(menor.getTipo() == tNodo.REAL && menor.arg0().getTipo() == tNodo.INT)
+		if(menor.getTipo() instanceof TipoReal && menor.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
@@ -397,88 +407,88 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		if(menor.arg1().getEsDesig()) {
 			etq++;
 		}
-		if(menor.getTipo() == tNodo.REAL && menor.arg1().getTipo() == tNodo.INT)
+		if(menor.getTipo() instanceof TipoReal && menor.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(menor.getTipo() == tNodo.INT)
+		if(menor.getTipo() instanceof TipoInt)
 			etq++;
-		else if(menor.getTipo() == tNodo.REAL)
+		else if(menor.getTipo() instanceof TipoReal)
 			etq++;
-		else if(menor.getTipo() == tNodo.STRING)
+		else if(menor.getTipo() instanceof TipoString)
 			etq++;
-		else if(menor.getTipo() == tNodo.BOOL)
+		else if(menor.getTipo() instanceof TipoBool)
 			etq++;
 		
 		menor.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Mayor mayor) {
+	public void procesa(Mayor mayor) throws Exception {
 		mayor.setEtqInic(etq);
 		// Primer argumento
 		mayor.arg0().procesa(this);
-		if(mayor.arg0().getEsDesig()) {
+		if(mayor.arg0().getEsDesig())  {
 			etq++;
 		}
-		if(mayor.getTipo() == tNodo.REAL && mayor.arg0().getTipo() == tNodo.INT)
+		if(mayor.getTipo() instanceof TipoReal && mayor.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		mayor.arg1().procesa(this);
-		if(mayor.arg1().getEsDesig()) {
+		if(mayor.arg1().getEsDesig()){
 			etq++;
 		}
-		if(mayor.getTipo() == tNodo.REAL && mayor.arg1().getTipo() == tNodo.INT)
+		if(mayor.getTipo() instanceof TipoReal && mayor.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(mayor.getTipo() == tNodo.INT)
+		if(mayor.getTipo() instanceof TipoInt)
 			etq++;
-		else if(mayor.getTipo() == tNodo.REAL)
+		else if(mayor.getTipo() instanceof TipoReal)
 			etq++;
-		else if(mayor.getTipo() == tNodo.STRING)
+		else if(mayor.getTipo() instanceof TipoString)
 			etq++;
-		else if(mayor.getTipo() == tNodo.BOOL)
+		else if(mayor.getTipo() instanceof TipoBool)
 			etq++;
 		
 		mayor.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(False false1) {
+	public void procesa(False false1) throws Exception {
 		false1.setEtqInic(etq);
 		etq++;
 		false1.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(MayorIgual mayorIgual) {
+	public void procesa(MayorIgual mayorIgual) throws Exception {
 		mayorIgual.setEtqInic(etq);
 		// Primer argumento
 		mayorIgual.arg0().procesa(this);
-		if(mayorIgual.arg0().getEsDesig()) {
+		if(mayorIgual.arg0().getEsDesig())  {
 			etq++;
 		}
-		if(mayorIgual.getTipo() == tNodo.REAL && mayorIgual.arg0().getTipo() == tNodo.INT)
+		if(mayorIgual.getTipo() instanceof TipoReal && mayorIgual.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		mayorIgual.arg1().procesa(this);
-		if(mayorIgual.arg1().getEsDesig()) {
+		if(mayorIgual.arg1().getEsDesig())  {
 			etq++;
 		}
-		if(mayorIgual.getTipo() == tNodo.REAL && mayorIgual.arg1().getTipo() == tNodo.INT)
+		if(mayorIgual.getTipo() instanceof TipoReal && mayorIgual.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(mayorIgual.getTipo() == tNodo.INT)
+		if(mayorIgual.getTipo() instanceof TipoInt)
 			etq++;
-		else if(mayorIgual.getTipo() == tNodo.REAL)
+		else if(mayorIgual.getTipo() instanceof TipoReal)
 			etq++;
-		else if(mayorIgual.getTipo() == tNodo.STRING)
+		else if(mayorIgual.getTipo() instanceof TipoString)
 			etq++;
-		else if(mayorIgual.getTipo() == tNodo.BOOL)
+		else if(mayorIgual.getTipo() instanceof TipoBool)
 			etq++;
 		
 		mayorIgual.setEtqSig(etq);
@@ -486,45 +496,45 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	
 
 	@Override
-	public void procesa(Igual igual) {
+	public void procesa(Igual igual) throws Exception {
 		igual.setEtqInic(etq);
 		// Primer argumento
 		igual.arg0().procesa(this);
 		if(igual.arg0().getEsDesig()) {
 			etq++;
 		}
-		if(igual.getTipo() == tNodo.REAL && igual.arg0().getTipo() == tNodo.INT)
+		if(igual.getTipo() instanceof TipoReal && igual.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		igual.arg1().procesa(this);
-		if(igual.arg1().getEsDesig()) {
+		if(igual.arg1().getEsDesig()){
 			etq++;
 		}
-		if(igual.getTipo() == tNodo.REAL && igual.arg1().getTipo() == tNodo.INT)
+		if(igual.getTipo() instanceof TipoReal && igual.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(igual.getTipo() == tNodo.INT)
+		if(igual.getTipo() instanceof TipoInt)
 			etq++;
-		else if(igual.getTipo() == tNodo.REAL)
+		else if(igual.getTipo() instanceof TipoReal)
 			etq++;	
-		else if(igual.getTipo() == tNodo.STRING)
+		else if(igual.getTipo() instanceof TipoString)
 			etq++;
-		else if(igual.getTipo() == tNodo.BOOL)
+		else if(igual.getTipo() instanceof TipoBool)
 			etq++;
 		igual.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Distinto distinto) {
+	public void procesa(Distinto distinto) throws Exception {
 		distinto.setEtqInic(etq);
 		// Primer argumento
 		distinto.arg0().procesa(this);
 		if(distinto.arg0().getEsDesig()) {
 			etq++;
 		}
-		if(distinto.getTipo() == tNodo.REAL && distinto.arg0().getTipo() == tNodo.INT)
+		if(distinto.getTipo() instanceof TipoReal && distinto.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
@@ -532,56 +542,56 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		if(distinto.arg1().getEsDesig()) {
 			etq++;
 		}
-		if(distinto.getTipo() == tNodo.REAL && distinto.arg1().getTipo() == tNodo.INT)
+		if(distinto.getTipo() instanceof TipoReal && distinto.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(distinto.getTipo() == tNodo.INT)
+		if(distinto.getTipo() instanceof TipoInt)
 			etq++;
-		else if(distinto.getTipo() == tNodo.REAL)
+		else if(distinto.getTipo() instanceof TipoReal)
 			etq++;
-		else if(distinto.getTipo() == tNodo.STRING)
+		else if(distinto.getTipo() instanceof TipoString)
 			etq++;
-		else if(distinto.getTipo() == tNodo.BOOL)
+		else if(distinto.getTipo() instanceof TipoBool)
 			etq++;
 		
 		distinto.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(MenorIgual menorIgual) {
+	public void procesa(MenorIgual menorIgual) throws Exception {
 		menorIgual.setEtqInic(etq);
 		// Primer argumento
 		menorIgual.arg0().procesa(this);
-		if(menorIgual.arg0().getEsDesig()) {
+		if(menorIgual.arg0().getEsDesig())  {
 			etq++;
 		}
-		if(menorIgual.getTipo() == tNodo.REAL && menorIgual.arg0().getTipo() == tNodo.INT)
+		if(menorIgual.getTipo() instanceof TipoReal && menorIgual.arg0().getTipo() instanceof TipoInt)
 			etq++;
 			
 		// Segundo argumento
 		menorIgual.arg1().procesa(this);
-		if(menorIgual.arg1().getEsDesig()) {
+		if(menorIgual.arg1().getEsDesig())  {
 			etq++;
 		}
-		if(menorIgual.getTipo() == tNodo.REAL && menorIgual.arg1().getTipo() == tNodo.INT)
+		if(menorIgual.getTipo() instanceof TipoReal && menorIgual.arg1().getTipo() instanceof TipoInt)
 			etq++;
 		
 		// Generación de instrucción comparativa
-		if(menorIgual.getTipo() == tNodo.INT)
+		if(menorIgual.getTipo() instanceof TipoInt)
 			etq++;
-		else if(menorIgual.getTipo() == tNodo.REAL)
+		else if(menorIgual.getTipo() instanceof TipoReal)
 			etq++;
-		else if(menorIgual.getTipo() == tNodo.STRING)
+		else if(menorIgual.getTipo() instanceof TipoString)
 			etq++;
-		else if(menorIgual.getTipo() == tNodo.BOOL)
+		else if(menorIgual.getTipo() instanceof TipoBool)
 			etq++;
 		
 		menorIgual.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(And and) {
+	public void procesa(And and) throws Exception {
 		and.setEtqInic(etq);
 		// Primer argumento
 		and.arg0().procesa(this);
@@ -591,7 +601,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 			
 		// Segundo argumento
 		and.arg1().procesa(this);
-		if(and.arg1().getEsDesig()) {
+		if(and.arg1().getEsDesig()){
 			etq++;
 		}
 		
@@ -602,7 +612,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Or or) {
+	public void procesa(Or or) throws Exception {
 		or.setEtqInic(etq);
 		// Primer argumento
 		or.arg0().procesa(this);
@@ -612,7 +622,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 			
 		// Segundo argumento
 		or.arg1().procesa(this);
-		if(or.arg1().getEsDesig()) {
+		if(or.arg1().getEsDesig()){
 			etq++;
 		}
 		
@@ -622,11 +632,11 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Modulo modulo) {
+	public void procesa(Modulo modulo) throws Exception {
 		modulo.setEtqInic(etq);
 		// Primer argumento
 		modulo.arg0().procesa(this);
-		if(modulo.arg0().getEsDesig()) {
+		if(modulo.arg0().getEsDesig()){
 			etq++;
 		}
 			
@@ -643,7 +653,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Negativo negativo) {
+	public void procesa(Negativo negativo) throws Exception {
 		negativo.setEtqInic(etq);
 		// Primer argumento
 		negativo.e().procesa(this);
@@ -652,20 +662,20 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 		}
 			
 		// Generación de instrucción comparativa
-		if(negativo.getTipo() == tNodo.INT)
+		if(negativo.getTipo() instanceof TipoInt)
 			etq++;
-		else if(negativo.getTipo() == tNodo.REAL)
+		else if(negativo.getTipo() instanceof TipoReal)
 			etq++;
 		
 		negativo.setEtqSig(etq);
 	}
 
 	@Override
-	public void procesa(Not not) {
+	public void procesa(Not not) throws Exception {
 		not.setEtqInic(etq);
 		// Primer argumento
 		not.e().procesa(this);
-		if(not.e().getEsDesig()) {
+		if(not.e().getEsDesig()){
 			etq++;
 		}
 			
@@ -675,7 +685,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Acc acc) {
+	public void procesa(Acc acc) throws Exception {
 		acc.setEtqInic(etq);
 		acc.e().procesa(this);
 		// int desp = 
@@ -684,7 +694,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Indx indx) {
+	public void procesa(Indx indx) throws Exception {
 		indx.setEtqInic(etq);
 		indx.e1().procesa(this);
 		indx.e2().procesa(this);
@@ -695,37 +705,37 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void procesa(Dref dref) {
+	public void procesa(Dref dref) throws Exception {
 		dref.setEtqInic(etq);
 		dref.e().procesa(this);
 		etq++;
 		dref.setEtqSig(etq);
 	}
 
-	/*private void gen_cod_params(PReal_ninguno preals, PForm_vacia pfs) {
+	private void etiqueta_params(PReal_ninguno preals, PForm_vacia pfs) throws Exception {
 		
 	}
 	
-	private void gen_cod_params(PReal_uno preals, PForm_una pfs) {
-		gen_cod_paso(preals.preal(), pfs.pform());
+	private void etiqueta_params(PReal_uno preals, PForm_una pfs) throws Exception {
+		etiqueta_paso(preals.preal(), pfs.pform());
 	}
 	
-	private void gen_cod_params(PReal_muchos preals, PForm_muchas pfs) {
-		gen_cod_params((PReal_muchos)preals.preals(), (PForm_muchas)pfs.pforms());
-		gen_cod_paso(preals.preal(), pfs.pform());
-	}*/
+	private void etiqueta_params(PReal_muchos preals, PForm_muchas pfs) throws Exception {
+		etiqueta_params((PReal_muchos)preals.preals(), (PForm_muchas)pfs.pforms());
+		etiqueta_paso(preals.preal(), pfs.pform());
+	}
 	
-	private void etiqueta_params(PReals preals, PForms pfs) {
-		if(preals.varias() && pfs.varias()) {
+	/*private void etiqueta_params(PReals preals, PForms pfs) throws Exception {
+		if(preals.varias() && pfs.varias()) throws Exception {
 			etiqueta_params(((PReal_muchos) preals).preals(), ((PForm_muchas) pfs).pforms());
 			etiqueta_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
 		}
 		else if(!preals.varias() && !pfs.varias()){
 			etiqueta_paso(((PReal_uno) preals).preal(), ((PForm_una) pfs).pform());
 		}
-	}
+	}*/
 	
-	private void etiqueta_paso(PReal preal, PForm pf) {
+	private void etiqueta_paso(PReal preal, PForm pf) throws Exception {
 		etq+=3;
 		preal.procesa(this);
 		if(preal.getEsDesig() && !pf.getEsParamRef())
@@ -735,33 +745,33 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	}
 
 	@Override
-	public void recolecta_procs(Decs_una decs_una) {
+	public void recolecta_procs(Decs_una decs_una) throws Exception {
 		decs_una.dec().recolecta_procs(this);
 	}
 
 	@Override
-	public void recolecta_procs(Decs_vacia decs_vacia) {
+	public void recolecta_procs(Decs_vacia decs_vacia) throws Exception {
 		
 	}
 
 	@Override
-	public void recolecta_procs(Decs_muchas decs_muchas) {
+	public void recolecta_procs(Decs_muchas decs_muchas) throws Exception {
 		decs_muchas.decs().recolecta_procs(this);
 		decs_muchas.dec().recolecta_procs(this);
 	}
 
 	@Override
-	public void recolecta_procs(DecVar decVar) {
+	public void recolecta_procs(DecVar decVar) throws Exception {
 		
 	}
 
 	@Override
-	public void recolecta_procs(DecTipo decTipo) {
+	public void recolecta_procs(DecTipo decTipo) throws Exception {
 		
 	}
 
 	@Override
-	public void recolecta_procs(DecProc decProc) {
+	public void recolecta_procs(DecProc decProc) throws Exception {
 		procs.push(decProc);
 	}
 	

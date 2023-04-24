@@ -1,32 +1,27 @@
 package implementacion.asint;
 
+
 public class TinyASint {
-	
-	public enum tNodo {
-		INT, REAL, BOOL, STRING, ID, ARRAY, RECORD, POINTER
-	}
 
 	public static class Nodo {
 		private int tam;
 		private int tamBase;
 		private int dir;
 		private int nivel;
-		private tNodo tipo;
+		private Tipo tipo;
 		private int etqInic;
 		private int etqSig;
-		private boolean esDesig;
 		private Nodo vinculo;
 		private boolean esParamRef;
-		
-		public Nodo(Dec dec) {
-			this.vinculo = dec;
-		}
 		
 		public Nodo() {
 		}
 
 		public int getTam() {
 			return tam;
+		}
+		public void setTam(int tam) {
+			this.tam = tam;
 		}
 		public int getTamBase() {
 			return tamBase;
@@ -37,8 +32,11 @@ public class TinyASint {
 		public int getNivel() {
 			return nivel;
 		}
-		public tNodo getTipo() {
+		public Tipo getTipo() {
 			return tipo;
+		}
+		public void setTipo(Tipo tipo) {
+			this.tipo = tipo;
 		}
 		public int getEtqInic() {
 			return etqInic;
@@ -51,9 +49,6 @@ public class TinyASint {
 		}
 		public void setEtqSig(int v) {
 			this.etqSig= v;
-		}
-		public boolean getEsDesig() {
-			return esDesig;
 		}
 		public Nodo getVinculo() {
 			return vinculo;
@@ -89,7 +84,7 @@ public class TinyASint {
 			return is;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -99,19 +94,25 @@ public class TinyASint {
 	public static abstract class Dec extends Nodo {
 		public Dec() {
 		}
+		
+		public abstract int getDir();
+		public abstract void setDir(int dir);
+		
+		public abstract int getNivel();
+		public abstract void setNivel(int nivel);
 
-		public abstract void procesa(Procesamiento p);
-		public abstract void recolecta_procs(Procesamiento p);
-		public abstract void vincula2(Procesamiento p);
+		public abstract void procesa(Procesamiento p) throws Exception;
+		public abstract void recolecta_procs(Procesamiento p) throws Exception;
+		public abstract void vincula2(Procesamiento p) throws Exception;
 	}
 
 	public static abstract class Decs extends Nodo {
 		public Decs() {
 		}
 
-		public abstract void procesa(Procesamiento p);
-		public abstract void recolecta_procs(Procesamiento p);
-		public abstract void vincula2(Procesamiento p);
+		public abstract void procesa(Procesamiento p) throws Exception;
+		public abstract void recolecta_procs(Procesamiento p) throws Exception;
+		public abstract void vincula2(Procesamiento p) throws Exception;
 	}
 	
 	public static class Decs_vacia extends Decs {
@@ -119,17 +120,17 @@ public class TinyASint {
 			
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -152,17 +153,17 @@ public class TinyASint {
 			return decs;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -179,17 +180,17 @@ public class TinyASint {
 			return dec;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -197,6 +198,8 @@ public class TinyASint {
 	public static class DecVar extends Dec {
 		private Tipo tipo;
 		private StringLocalizado id;
+		private int dir;
+		private int nivel;
 
 		public DecVar(Tipo tipo, StringLocalizado id) {
 			super();
@@ -209,7 +212,7 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
@@ -218,20 +221,42 @@ public class TinyASint {
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
+		}
+
+		@Override
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
 		}
 	}
 
 	public static class DecTipo extends Dec {
 		private Tipo tipo;
 		private StringLocalizado id;
-
+		private int dir;
+		private int nivel;
+		
 		public DecTipo(Tipo tipo, StringLocalizado id) {
 			super();
 			this.id = id;
@@ -243,7 +268,7 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
@@ -252,13 +277,33 @@ public class TinyASint {
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
+		}
+
+		@Override
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
 		}
 	}
 
@@ -267,6 +312,8 @@ public class TinyASint {
 		private PForms pf;
 		private Decs decs;
 		private Is is;
+		private int dir;
+		private int nivel;
 
 		public DecProc(StringLocalizado id, PForms pf, Decs decs, Is is) {
 			super();
@@ -293,18 +340,38 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public void recolecta_procs(Procesamiento p) throws Exception{
 			p.recolecta_procs(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p)throws Exception {
 			p.vincula2(this);			
+		}
+
+		@Override
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
 		}
 
 	}
@@ -314,12 +381,18 @@ public class TinyASint {
 
 	public static abstract class Tipo extends Nodo {
 		public Tipo() {
-
+			this.setTam(-1);
 		}
 		
-		public abstract boolean esRef();
-		public abstract void procesa(Procesamiento p);
-		public abstract void vincula2(Procesamiento p);
+		public Tipo ref() {
+			return this;
+		}
+		
+		public abstract void procesa(Procesamiento p) throws Exception;
+		public abstract void vincula2(Procesamiento p) throws Exception;
+		public abstract void asigna_espacio_tipo(Procesamiento p) throws Exception;
+		public abstract void asigna_espacio_tipo1(Procesamiento p) throws Exception;
+		public abstract void asigna_espacio_tipo2(Procesamiento p) throws Exception;
 	}
 
 	public static class TipoInt extends Tipo {
@@ -329,18 +402,27 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception{
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception{
 			p.vincula2(this);
 		}
 
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -352,18 +434,28 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
+
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -375,18 +467,28 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
+
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -398,18 +500,27 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -425,27 +536,48 @@ public class TinyASint {
 		public StringLocalizado id() {
 			return id;
 		}
+		
+		public Tipo ref() {
+			if(this.getVinculo() instanceof DecTipo) {
+				return ((DecTipo) this.getVinculo()).getTipo().ref();
+			}
+			else
+				return new TipoError();
+		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
+
 		@Override
-		public boolean esRef() {
-			return true;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
 		}
 
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
+		}
 	}
 
 	public static class TipoArray extends Tipo {
 		private StringLocalizado id;
 		private Tipo tipo;
+		
+		public TipoArray() {
+			
+		}
 
 		public TipoArray(StringLocalizado id, Tipo tipo) {
 			super();
@@ -462,18 +594,27 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -491,18 +632,27 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
 		}
 
 	}
@@ -520,27 +670,140 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 
 		@Override
-		public boolean esRef() {
-			return false;
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			p.asiga_espacio_tipo(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo1(this);
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
+			p.asigna_espacio_tipo2(this);
 		}
 
 	}
+	
+	public static class TipoError extends Tipo {
 
+		@Override
+		public void procesa(Procesamiento p) throws Exception {
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) throws Exception {
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+	}
+
+	public static class TipoOk extends Tipo {
+
+
+		@Override
+		public void procesa(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+	}
+	
+	public static class TipoNull extends Tipo {
+
+
+		@Override
+		public void procesa(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo1(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void asigna_espacio_tipo2(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+	}
 	// Parametros Formales
 	
-	public static abstract class PForm extends Dec{
+	public static class PForm extends Dec{
 		private StringLocalizado id;
 		private Tipo tipo;
+		private int dir;
+		private int nivel;
 		
 		public PForm(StringLocalizado id, Tipo tipo) {
 			super();
@@ -556,47 +819,123 @@ public class TinyASint {
 			return tipo;
 		}
 		
-		public abstract void procesa(Procesamiento p);
-		public abstract void vincula2(Procesamiento p);
-	}
-	
-	public static class PForms extends Nodo{
-		public PForms() {
+		public void procesa(Procesamiento p) throws Exception {
 		}
-		
-		public boolean varias() {
-			return false;
-		}
-		
-		public void procesa(Procesamiento p) {
-			p.procesa(this);
-		}
-		
-		public void vincula2(Procesamiento p) {
-			p.vincula2(this);
-		}
-		
-	}
-	
-	public static class PFormRef extends PForm{
-		public PFormRef(StringLocalizado id, Tipo tipo) {
-			super(id,tipo);
-			this.setEsParamRef(true);
-		}
-		
-		public void procesa(Procesamiento p) {
-			p.procesa(this);
+		public void vincula2(Procesamiento p) throws Exception {
 		}
 
 		@Override
-		public void recolecta_procs(Procesamiento p) {
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) throws Exception {
+			
+		}
+	}
+	
+	public static class PForms extends Dec{
+		private int dir;
+		private int nivel;
+		
+		public PForms() {
+		}
+		
+
+		public void procesa(Procesamiento p) throws Exception {
+			p.procesa(this);
+		}
+		
+		public void vincula2(Procesamiento p) throws Exception {
+			p.vincula2(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) throws Exception {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void vincula2(Procesamiento p) {
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
+		}
+		
+	}
+	
+	public static class PFormRef extends PForm{
+		private int dir;
+		private int nivel;
+		
+		public PFormRef(StringLocalizado id, Tipo tipo) {
+			super(id,tipo);
+			this.setEsParamRef(true);
+		}
+		
+		public void procesa(Procesamiento p) throws Exception {
+			p.procesa(this);
+		}
+
+		@Override
+		public void recolecta_procs(Procesamiento p) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
+		}
+
+		@Override
+		public int getDir() {
+			return dir;
+		}
+
+		@Override
+		public void setDir(int dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public int getNivel() {
+			return nivel;
+		}
+
+		@Override
+		public void setNivel(int nivel) {
+			this.nivel = nivel;
 		}
 
 		
@@ -607,11 +946,11 @@ public class TinyASint {
 			
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 		
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -634,15 +973,12 @@ public class TinyASint {
 			return pforms;
 		}
 		
-		public boolean varias() {
-			return true;
-		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 		
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -659,11 +995,11 @@ public class TinyASint {
 			return pform;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 		
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -675,7 +1011,7 @@ public class TinyASint {
 			
 		}
 		
-		public abstract void procesa(Procesamiento p);
+		public abstract void procesa(Procesamiento p) throws Exception;
 	}
 	
 	public static abstract class Is extends Nodo {
@@ -683,7 +1019,7 @@ public class TinyASint {
 			
 		}
 		
-		public abstract void procesa(Procesamiento p);
+		public abstract void procesa(Procesamiento p) throws Exception;
 	}
 	
 	public static class Is_vacia extends Is {
@@ -691,7 +1027,7 @@ public class TinyASint {
 			
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -714,7 +1050,7 @@ public class TinyASint {
 			return is;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -731,7 +1067,7 @@ public class TinyASint {
 			return i;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -754,7 +1090,7 @@ public class TinyASint {
 			return e2;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -777,7 +1113,7 @@ public class TinyASint {
 			return is;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -806,7 +1142,7 @@ public class TinyASint {
 			return is2;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -829,7 +1165,7 @@ public class TinyASint {
 			return is;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -846,7 +1182,7 @@ public class TinyASint {
 			return e;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -863,7 +1199,7 @@ public class TinyASint {
 			return e;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -874,7 +1210,7 @@ public class TinyASint {
 			super();
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -890,7 +1226,7 @@ public class TinyASint {
 			return e;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -906,7 +1242,7 @@ public class TinyASint {
 			return e;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -929,7 +1265,7 @@ public class TinyASint {
 			return preals;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -952,11 +1288,11 @@ public class TinyASint {
 			return is;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 		
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -966,6 +1302,7 @@ public class TinyASint {
 	public static class Campo extends Nodo{
 		private Tipo tipo;
 		private StringLocalizado id;
+		private int desp;
 		
 		public Campo(Tipo tipo, StringLocalizado id) {
 			super();
@@ -981,11 +1318,19 @@ public class TinyASint {
 			return id;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public int getDesp() {
+			return desp;
+		}
+		
+		public void setDesp(int desp) {
+			this.desp = desp;
+		}
+		
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 		
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -997,8 +1342,8 @@ public class TinyASint {
 		}
 
 		
-		public abstract void procesa(Procesamiento p);
-		public abstract void vincula2(Procesamiento p);
+		public abstract void procesa(Procesamiento p) throws Exception;
+		public abstract void vincula2(Procesamiento p) throws Exception;
 	}
 
 	public static class Campos_muchos extends Campos {
@@ -1019,11 +1364,11 @@ public class TinyASint {
 			return campos;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
@@ -1040,18 +1385,18 @@ public class TinyASint {
 			return campo;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 
-		public void vincula2(Procesamiento p) {
+		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
 	}
 	
 	// Parámetros reales
 	
-	public static abstract class PReal extends Nodo{
+	public static class PReal extends Nodo{
 		private Exp e;
 		
 		public PReal(Exp e) {
@@ -1063,18 +1408,24 @@ public class TinyASint {
 			return e;
 		}
 		
-		public abstract void procesa(Procesamiento p);
+		public boolean getEsDesig() {
+			return false;
+		}
+		
+		public void procesa(Procesamiento p) throws Exception {
+		}
 	}
 	
 	public static class PReals extends Nodo{
 		public PReals() {
 		}
 		
-		public boolean varias() {
+		
+		public boolean getEsDesig() {
 			return false;
 		}
 		
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -1098,11 +1449,8 @@ public class TinyASint {
 			return preals;
 		}
 		
-		public boolean varias() {
-			return true;
-		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -1119,7 +1467,7 @@ public class TinyASint {
 			return preal;
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -1130,7 +1478,7 @@ public class TinyASint {
 			super();
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
 	}
@@ -1143,8 +1491,8 @@ public class TinyASint {
 		}
 
 		public abstract int prioridad();
-
-		public abstract void procesa(Procesamiento procesamiento);
+		public abstract boolean getEsDesig();
+		public abstract void procesa(Procesamiento procesamiento) throws Exception;
 	}
 	
 	public static class LitInt extends Exp {
@@ -1166,8 +1514,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1190,8 +1543,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1214,8 +1572,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1232,8 +1595,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1250,8 +1618,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1274,8 +1647,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return true;
 		}
 	}
 
@@ -1292,8 +1670,13 @@ public class TinyASint {
 		}
 	
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 
@@ -1334,8 +1717,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1345,8 +1733,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1356,8 +1749,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1367,8 +1765,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1378,8 +1781,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	public static class Distinto extends ExpRelacional{
@@ -1388,8 +1796,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1408,8 +1821,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1418,8 +1836,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1438,8 +1861,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1448,8 +1876,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1468,8 +1901,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1478,8 +1916,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 
@@ -1488,8 +1931,13 @@ public class TinyASint {
 			super(arg0, arg1);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 
@@ -1515,8 +1963,13 @@ public class TinyASint {
 			super(arg0);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 
@@ -1525,8 +1978,13 @@ public class TinyASint {
 			super(arg0);
 		}
 
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return false;
 		}
 	}
 	
@@ -1560,8 +2018,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return true;
 		}	
 	}
 	
@@ -1589,8 +2052,13 @@ public class TinyASint {
 		}
 		
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return true;
 		}	
 	}
 	
@@ -1601,8 +2069,13 @@ public class TinyASint {
 		}
 
 		@Override
-		public void procesa(Procesamiento p) {
+		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public boolean getEsDesig() {
+			return true;
 		}	
 	}
 	
@@ -1702,6 +2175,10 @@ public class TinyASint {
 	
 	public PForms pForms() {
 		return new PForms();
+	}
+	
+	public PForm pForm(StringLocalizado id, Tipo t) {
+		return new PForm(id,t);
 	}
 	
 	public PFormRef pFormRef(StringLocalizado id, Tipo t) {
@@ -1804,15 +2281,19 @@ public class TinyASint {
 		return new PReal_muchos(preals, preal);
 	}
 	
+	public PReal pReal(Exp e) {
+		return new PReal(e);
+	}
+	
 	public LitInt litInt(StringLocalizado s) {
 		return new LitInt(s);
 	}
 	
-	public LitReal LiReal(StringLocalizado s) {
+	public LitReal litReal(StringLocalizado s) {
 		return new LitReal(s);
 	}
 	
-	public LitStr LitStr(StringLocalizado s) {
+	public LitStr litStr(StringLocalizado s) {
 		return new LitStr(s);
 	}
 	

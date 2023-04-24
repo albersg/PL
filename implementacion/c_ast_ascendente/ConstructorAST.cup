@@ -1,0 +1,323 @@
+package implementacion.c_ast_ascendente;
+
+import java_cup.runtime.*;
+import implementacion.semops.SemOps;
+import implementacion.asint.TinyASint.*;
+import implementacion.c_ast_ascendente.MemOp;
+
+
+scan with {: return getScanner().next_token(); :};
+action code {:
+   private SemOps sem = new SemOps();
+:};
+parser code {: 
+   private GestionErrores errores;
+   public void syntax_error(Symbol unidadLexica) {
+     errores.errorSintactico((UnidadLexica)unidadLexica);
+   }
+:};
+init with {: 
+   errores = new GestionErrores();
+   AnalizadorLexico alex = (AnalizadorLexico)getScanner();
+   alex.fijaGestionErrores(errores);
+:};
+
+
+terminal MAS, MENOS, MUL, DIV, MOD, MENOR, MAYOR, MENORIG, MAYORIG, IGUAL, ASIG, DIST, PAR_AP,
+	PAR_CIER, PUNTOCOMA, CORCH_AP, CORCH_CIER, PUNTO, CIRCUN, COMA, DOSPUNTOS,INT, REAL, BOOL, STRING, AND, OR, NOT, NULL, TRUE,
+	FALSE, PROC, IF, THEN, ELSE, WHILE, DO, SEQ, BEGIN, END, RECORD, ARRAY, OF, NEW, DELETE, READ, WRITE, NL, VAR, TYPE;
+	
+terminal StringLocalizado ID, LITENT, LITREAL, LITSTR;
+
+non terminal  Prog Prog;
+non terminal  Decs Decs, LDecs;
+non terminal  Dec Dec;
+non terminal  Tipo TipoBase, Tipo;
+non terminal  PForms PForms, LPFormsPar, LPForms;
+non terminal  PForm PForm;
+non terminal  PReals PReals, LPRealsPar, LPReals;
+non terminal  PReal PReal;
+non terminal  Campos Campos;
+non terminal  Campo Campo;
+non terminal  Is Insts, LInstsAux, LInsts;
+non terminal  I Inst;
+non terminal  Exp Exp, Exp0, Exp1, Exp2, Exp3, Exp4, Exp5, Exp6;
+non terminal  String Op0, Op3, Op4;
+non terminal  MemOp Op5;
+
+
+Prog ::= Decs:decs Insts:insts
+	{: RESULT = sem.prog(decs, insts); :};
+	
+Decs ::= LDecs:ldecs
+	{: RESULT = ldecs; :};
+	
+Decs ::= 
+	{: RESULT = sem.decs_vacia(); :};
+	
+LDecs ::= LDecs:ldecs Dec:dec
+	{: RESULT = sem.decs_muchas(ldecs, dec); :};
+
+LDecs ::= Dec:dec
+	{: RESULT = sem.decs_una(dec); :};
+	
+Dec ::= VAR ID:id DOSPUNTOS Tipo:tipo PUNTOCOMA
+	{: RESULT = sem.decVar(tipo, id); :};
+
+Dec ::= TYPE ID:id DOSPUNTOS Tipo:tipo PUNTOCOMA
+	{: RESULT = sem.decTipo(tipo, id); :};
+	
+Dec ::= PROC ID:id PAR_AP PForms:pforms PAR_CIER Decs:decs Insts:insts PUNTOCOMA
+	{: RESULT = sem.decProc(id, pforms, decs, insts); :};
+
+TipoBase ::= INT
+	{: RESULT = sem.tipoInt(); :};
+	
+TipoBase ::= REAL
+	{: RESULT = sem.tipoReal(); :};
+	
+TipoBase ::= STRING
+	{: RESULT = sem.tipoString(); :};
+	
+TipoBase ::= BOOL
+	{: RESULT = sem.tipoBool(); :};
+	
+Tipo ::= TipoBase:tipobase
+	{: RESULT = tipobase; :};
+	
+Tipo ::= ID:id
+	{: RESULT = sem.tipoRef(id); :};
+	
+Tipo ::= ARRAY CORCH_AP LITENT:litent CORCH_CIER OF TipoBase:tipobase
+	{: RESULT = sem.tipoArray(litent, tipobase); :};
+	
+Tipo ::= RECORD Campos:campos END
+	{: RESULT = sem.tipoRecord(campos); :};
+	
+Tipo ::= CIRCUN TipoBase:tipobase
+	{: RESULT = sem.tipoPointer(tipobase); :};
+	
+PForms ::= PAR_AP LPFormsPar:lpformspar PAR_CIER
+	{: RESULT = lpformspar; :};
+	
+LPFormsPar ::= LPForms:lpforms
+	{: RESULT = lpforms; :};
+	
+LPFormsPar ::= 
+	{: RESULT = sem.pForm_vacia(); :};
+	
+LPForms ::= LPForms:lpforms COMA PForm:pform
+	{: RESULT = sem.pForm_muchas(lpforms, pform); :};
+	
+LPForms ::= PForm:pform
+	{: RESULT = sem.pForm_una(pform); :};
+	
+PForm ::= VAR ID:id DOSPUNTOS Tipo:tipo
+	{: RESULT = sem.pFormRef(id, tipo); :};
+	
+PForm ::= ID:id DOSPUNTOS Tipo:tipo
+	{: RESULT = sem.pForm(id, tipo); :};
+	
+PReals ::= PAR_AP LPRealsPar:lprealspar PAR_CIER
+	{: RESULT = lprealspar; :};
+	
+LPRealsPar ::= LPReals:lpreals
+	{: RESULT = lpreals; :};
+	
+LPRealsPar ::= 
+	{: RESULT = sem.pReal_ninguno(); :};
+	
+LPReals ::= LPReals:lpreals COMA PReal:preal
+	{: RESULT = sem.pReal_muchos(lpreals, preal); :};
+	
+LPReals ::= PReal:preal
+	{: RESULT = sem.pReal_uno(preal); :};
+	
+PReal ::= Exp:exp
+	{: RESULT = sem.pReal(exp); :};
+	
+Campos ::= Campos:campos PUNTOCOMA Campo:campo
+	{: RESULT = sem.campos_muchos(campos, campo); :};
+	
+Campos ::= Campo:campo
+	{: RESULT = sem.campos_uno(campo); :};
+	
+Campo ::= ID:id DOSPUNTOS Tipo:tipo
+	{: RESULT = sem.campo(tipo, id); :};
+	
+Insts ::= BEGIN LInstsAux:linstsaux END
+	{: RESULT = linstsaux; :};
+	
+LInstsAux ::= LInsts:linsts
+	{: RESULT = linsts; :};
+	
+LInstsAux ::= 
+	{: RESULT = sem.is_vacia(); :};
+	
+LInsts ::= LInsts:linsts Inst:inst
+	{: RESULT = sem.is_muchas(linsts, inst); :};
+	
+LInsts ::= Inst:inst
+	{: RESULT = sem.is_una(inst); :};
+	
+Inst ::= Exp:exp0 ASIG Exp:exp1 PUNTOCOMA
+	{: RESULT = sem.asig(exp0, exp1); :};
+	
+Inst ::= IF Exp:exp THEN LInsts:linsts END
+	{: RESULT = sem.if_then(exp, linsts); :};
+	
+Inst ::= IF Exp:exp THEN LInsts:linsts END PUNTOCOMA
+	{: RESULT = sem.if_then(exp, linsts); :};
+	
+Inst ::= IF Exp:exp THEN LInsts:linsts0 ELSE LInsts:linsts1 END
+	{: RESULT = sem.if_then_else(exp, linsts0, linsts1); :};
+	
+Inst ::= IF Exp:exp THEN LInsts:linsts0 ELSE LInsts:linsts1 END PUNTOCOMA
+	{: RESULT = sem.if_then_else(exp, linsts0, linsts1); :};
+	
+Inst ::= WHILE Exp:exp DO LInsts:linsts END
+	{: RESULT = sem.while1(exp, linsts); :};
+	
+Inst ::= WHILE Exp:exp DO LInsts:linsts END PUNTOCOMA
+	{: RESULT = sem.while1(exp, linsts); :};
+	
+Inst ::= READ Exp:exp PUNTOCOMA
+	{: RESULT = sem.read(exp); :};
+	
+Inst ::= WRITE Exp:exp PUNTOCOMA
+	{: RESULT = sem.write(exp); :};
+	
+Inst ::= NL PUNTOCOMA
+	{: RESULT = sem.nl(); :};
+	
+Inst ::= NEW Exp:exp PUNTOCOMA
+	{: RESULT = sem.new1(exp); :};
+	
+Inst ::= DELETE Exp:exp PUNTOCOMA
+	{: RESULT = sem.delete(exp); :};
+	
+Inst ::= Exp:exp PReals:preals PUNTOCOMA
+	{: RESULT = sem.call(exp, preals); :};
+	
+Inst ::= SEQ Decs:decs Insts:insts PUNTOCOMA
+	{: RESULT = sem.iComp(decs, insts); :};
+	
+Inst ::= SEQ Decs:decs Insts:insts 
+	{: RESULT = sem.iComp(decs, insts); :};
+	
+Exp ::= Exp0:exp0
+	{: RESULT = exp0; :};
+	
+Exp0 ::= Exp1:exp10 Op0:op0 Exp1:exp11
+	{: RESULT = sem.expb(op0, exp10, exp11); :};
+	
+Exp0 ::= Exp1:exp1
+	{: RESULT = exp1; :};
+	
+Op0 ::= MENOR
+	{: RESULT = "<"; :};
+	
+Op0 ::= MAYOR
+	{: RESULT = ">"; :};
+	
+Op0 ::= MENORIG
+	{: RESULT = "<="; :};
+	
+Op0 ::= MAYORIG
+	{: RESULT = ">="; :};
+	
+Op0 ::= IGUAL
+	{: RESULT = "=="; :};
+	
+Op0 ::= DIST
+	{: RESULT = "!="; :};
+	
+Exp1 ::= Exp2:exp20 MAS Exp2:exp21
+	{: RESULT = sem.suma(exp20, exp21); :};
+	
+Exp1 ::= Exp1:exp1 MENOS Exp2:exp2
+	{: RESULT = sem.resta(exp1, exp2); :};
+	
+Exp1 ::= Exp2:exp2
+	{: RESULT = exp2; :};
+	
+Exp2 ::= Exp3:exp30 AND Exp3:exp31
+	{: RESULT = sem.and(exp30, exp31); :};
+	
+Exp2 ::= Exp3:exp3 OR Exp2:exp2
+	{: RESULT = sem.or(exp3, exp2); :};
+	
+Exp2 ::= Exp3:exp3
+	{: RESULT = exp3; :};
+
+Exp3 ::= Exp3:exp3 Op3:op3 Exp4:exp4
+	{: RESULT = sem.expb(op3, exp3,exp4); :};
+	
+Exp3 ::= Exp4:exp4
+	{: RESULT = exp4; :};
+	
+Op3 ::= DIV
+	{: RESULT = "/"; :};
+	
+Op3 ::= MUL
+	{: RESULT = "*"; :};
+	
+Op3 ::= MOD
+	{: RESULT = "%"; :};
+	
+Exp4 ::= Op4:op4 Exp4:exp4
+	{: RESULT = sem.expu(op4, exp4); :};
+	
+Exp4 ::= Exp5:exp5
+	{: RESULT = exp5; :};
+	
+Op4 ::= MENOS
+	{: RESULT = "-"; :};
+	
+Op4 ::= NOT
+	{: RESULT = "not"; :};
+	
+Exp5 ::= Exp5:exp5 Op5:op5
+	{: RESULT = sem.exp_mem(op5.op, op5.exp, op5.valor, exp5); :};
+	
+Exp5 ::= Exp6:exp6
+	{: RESULT = exp6; :};
+	
+Op5 ::= CORCH_AP Exp:exp CORCH_CIER
+	{: RESULT = new MemOp("indx", exp, null); :};
+	
+Op5 ::= PUNTO ID:id
+	{: RESULT = new MemOp("acc", null, id); :};
+	
+Op5 ::= CIRCUN PUNTO ID:id
+	{: RESULT = new MemOp("dref", null, id); :};
+	
+Exp6 ::= LITENT:litent
+	{: RESULT = sem.litInt(litent); :};
+	
+Exp6 ::= LITREAL:litreal
+	{: RESULT = sem.litReal(litreal); :};
+	
+Exp6 ::= LITSTR:litstr
+	{: RESULT = sem.litStr(litstr); :};
+	
+Exp6 ::= TRUE
+	{: RESULT = sem.true1(); :};
+	
+Exp6 ::= FALSE
+	{: RESULT = sem.false1(); :};
+	
+Exp6 ::= ID:id
+	{: RESULT = sem.id(id); :};
+	
+Exp6 ::= NULL
+	{: RESULT = sem.null1(); :};
+	
+Exp6 ::= PAR_AP Exp0:exp0 PAR_CIER
+	{: RESULT = exp0; :};
+	
+	
+
+	
+
+

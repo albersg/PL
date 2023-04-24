@@ -820,36 +820,90 @@ public class MaquinaP {
 		};
 	}
 	
-	private class IRead implements Instruccion {
+	private class IReadInt implements Instruccion {
 		public void ejecuta() {
-			Scanner in = new Scanner(System.in);
-			Valor opnd = new ValorString(in.next());
-			in.close();
+			ValorInt opnd = new ValorInt(in.nextInt());
 			pilaEvaluacion.push(opnd);
 			pc++;
 		}
 
 		public String toString() {
-			return "read";
+			return "readInt";
 		};
 	}
 	
-	private class IWrite implements Instruccion {
+	private class IReadReal implements Instruccion {
 		public void ejecuta() {
-			Valor opnd1 = pilaEvaluacion.pop();
-			System.out.println(opnd1);
+			ValorReal opnd = new ValorReal(in.nextDouble());
+			pilaEvaluacion.push(opnd);
 			pc++;
 		}
 
 		public String toString() {
-			return "write";
+			return "readReal";
+		};
+	}
+	
+	private class IReadString implements Instruccion {
+		public void ejecuta() {
+			ValorString opnd = new ValorString(in.nextLine());
+			pilaEvaluacion.push(opnd);
+			pc++;
+		}
+
+		public String toString() {
+			return "readString";
+		};
+	}
+	
+	private class IWriteInt implements Instruccion {
+		public void ejecuta() {
+			System.out.println(pilaEvaluacion.pop().valorInt());
+			pc++;
+		}
+
+		public String toString() {
+			return "writeInt";
+		};
+	}
+	
+	private class IWriteReal implements Instruccion {
+		public void ejecuta() {
+			System.out.println(pilaEvaluacion.pop().valorReal());
+			pc++;
+		}
+
+		public String toString() {
+			return "writeReal";
+		};
+	}
+	
+	private class IWriteString implements Instruccion {
+		public void ejecuta() {
+			System.out.println(pilaEvaluacion.pop().valorString());
+			pc++;
+		}
+
+		public String toString() {
+			return "writeString";
+		};
+	}
+	
+	private class IWriteBool implements Instruccion {
+		public void ejecuta() {
+			System.out.println(pilaEvaluacion.pop().valorBool());
+			pc++;
+		}
+
+		public String toString() {
+			return "writeBool";
 		};
 	}
 	
 	private class IInt2Real implements Instruccion{
 		public void ejecuta() {
 			Valor opnd = pilaEvaluacion.pop();
-			pilaEvaluacion.push(new ValorReal((float) opnd.valorInt()));
+			pilaEvaluacion.push(new ValorReal((double) opnd.valorInt()));
 			pc++;
 		}
 
@@ -867,7 +921,7 @@ public class MaquinaP {
 			throw new EAccesoIlegitimo();
 		}
 		
-		public float valorReal() {
+		public double valorReal() {
 			throw new EAccesoIlegitimo();
 		}
 		
@@ -909,9 +963,9 @@ public class MaquinaP {
 	}
 	
 	private class ValorReal extends Valor {
-		private float valor;
+		private double valor;
 
-		public ValorReal(float valor) {
+		public ValorReal(double valor) {
 			this.valor = valor;
 		}
 
@@ -919,7 +973,7 @@ public class MaquinaP {
 			return String.valueOf(valor);
 		}
 
-		public float valorReal() {
+		public double valorReal() {
 			return valor;
 		}
 	}
@@ -1053,9 +1107,19 @@ public class MaquinaP {
 	
 	private INegativoReal INEGATIVOREAL;
 	
-	private IRead IREAD;
+	private IReadInt IREADINT;
+		
+	private IReadReal IREADREAL;
 	
-	private IWrite IWRITE;
+	private IReadString IREADSTRING;
+	
+	private IWriteInt IWRITEINT;
+	
+	private IWriteReal IWRITEREAL;
+	
+	private IWriteBool IWRITEBOOL;
+	
+	private IWriteString IWRITESTRING;
 
 	private INot INOT;
 
@@ -1076,6 +1140,8 @@ public class MaquinaP {
 	private int tamheap;
 
 	private int ndisplays;
+	
+	private Scanner in;
 
 	public MaquinaP(int tamdatos, int tampila, int tamheap, int ndisplays) {
 		this.tamdatos = tamdatos;
@@ -1085,6 +1151,7 @@ public class MaquinaP {
 		pilaEvaluacion = new Stack<>();
 		datos = new Valor[tamdatos + tampila + tamheap];
 		this.pc = 0;
+		this.in = new Scanner(System.in);
 		ISUMAINT = new ISumaInt();
 		ISUMAREAL = new ISumaReal();
 		IRESTAINT = new IRestaInt();
@@ -1117,12 +1184,22 @@ public class MaquinaP {
 		IMAYORIGUALSTRING = new IMayorIgualString();
 		IMAYORIGUALBOOL = new IMayorIgualBool();
 		
+		IIGUALINT = new IIgualInt();
+		IIGUALREAL = new IIgualReal();
+		IIGUALBOOL = new IIgualBool();
+		IIGUALSTRING = new IIgualString();
+		
 		IDISTINTOINT = new IDistintoInt();
 		IDISTINTOREAL = new IDistintoReal();
 		INOT = new INot();
 		
-		IREAD = new IRead();
-		IWRITE = new IWrite();
+		IREADINT = new IReadInt();
+		IREADREAL = new IReadReal();
+		IREADSTRING = new IReadString();
+		IWRITEINT = new IWriteInt();
+		IWRITEREAL = new IWriteReal();
+		IWRITEBOOL = new IWriteBool();
+		IWRITESTRING = new IWriteString();
 		
 		IAPILAIND = new IApilaind();
 		IDESAPILAIND = new IDesapilaind();
@@ -1391,12 +1468,32 @@ public class MaquinaP {
 		return INOT;
 	}
 	
-	public Instruccion read() {
-		return IREAD;
+	public Instruccion readInt() {
+		return IREADINT;
 	}
 	
-	public Instruccion write() {
-		return IWRITE;
+	public Instruccion readReal() {
+		return IREADREAL;
+	}
+	
+	public Instruccion readString() {
+		return IREADSTRING;
+	}
+	
+	public Instruccion writeInt() {
+		return IWRITEINT;
+	}
+	
+	public Instruccion writeReal() {
+		return IWRITEREAL;
+	}
+	
+	public Instruccion writeBool() {
+		return IWRITEBOOL;
+	}
+	
+	public Instruccion writeString() {
+		return IWRITESTRING;
 	}
 	
 	public Instruccion int2real() {

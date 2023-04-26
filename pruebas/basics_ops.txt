@@ -8,7 +8,7 @@ read op1;
 write 'Introduce otro entero: ';
 read op2;
 read op;
-write 'Introduce un operador (+,-,*,/,%): ';
+write 'Introduce un operador (+,-,*,/): ';
 read op;
 if (op == '+') then
 	write op1 + op2; nl;
@@ -22,14 +22,10 @@ else
    if (op == '*') then
 	write op1 * op2; nl;
    else
-    if (op == '%') then
-	write op1 % op2; nl;
-    else
-	write 'Operador desconocido '; 
-	write op; nl;
-    end
+    write 'Operador desconocido '; nl;
    end
   end 
  end
 end
-end
+nl; write 'Fichero finalizado! '; 
+end.

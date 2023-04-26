@@ -644,14 +644,29 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Negativo negativo) throws Exception {
-		// TODO Auto-generated method stub
+		negativo.e().procesa(this);
+		if(negativo.e().getTipo().ref() instanceof TipoInt)
+			negativo.setTipo(new TipoInt());
+		else if(negativo.e().getTipo().ref() instanceof TipoReal)
+			negativo.setTipo(new TipoReal());
+		else {
+			negativo.setTipo(new TipoError());
+			System.out.println("Error: negativo");
+			throw new Exception();
+		}
 		
 	}
 
 	@Override
 	public void procesa(Not not) throws Exception {
-		// TODO Auto-generated method stub
-		
+		not.e().procesa(this);
+		if(not.e().getTipo().ref() instanceof TipoBool)
+			not.setTipo(new TipoBool());
+		else {
+			not.setTipo(new TipoError());
+			System.out.println("Error: not");
+			throw new Exception();
+		}
 	}
 
 	@Override

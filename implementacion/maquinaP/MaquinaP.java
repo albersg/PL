@@ -858,7 +858,7 @@ public class MaquinaP {
 	
 	private class IWriteInt implements Instruccion {
 		public void ejecuta() {
-			System.out.println(pilaEvaluacion.pop().valorInt());
+			System.out.print(pilaEvaluacion.pop().valorInt());
 			pc++;
 		}
 
@@ -869,7 +869,7 @@ public class MaquinaP {
 	
 	private class IWriteReal implements Instruccion {
 		public void ejecuta() {
-			System.out.println(pilaEvaluacion.pop().valorReal());
+			System.out.print(pilaEvaluacion.pop().valorReal());
 			pc++;
 		}
 
@@ -880,7 +880,7 @@ public class MaquinaP {
 	
 	private class IWriteString implements Instruccion {
 		public void ejecuta() {
-			System.out.println(pilaEvaluacion.pop().valorString());
+			System.out.print(pilaEvaluacion.pop().valorString());
 			pc++;
 		}
 
@@ -891,7 +891,7 @@ public class MaquinaP {
 	
 	private class IWriteBool implements Instruccion {
 		public void ejecuta() {
-			System.out.println(pilaEvaluacion.pop().valorBool());
+			System.out.print(pilaEvaluacion.pop().valorBool());
 			pc++;
 		}
 

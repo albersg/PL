@@ -372,7 +372,14 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(DecProc decProc) throws Exception {
-
+		recolecta(decProc.id(), decProc);
+		ts.add(new HashMap<StringLocalizado, Dec>());
+		decProc.pf().procesa(this);
+		decProc.decs().procesa(this);
+		decProc.pf().vincula2(this);
+		decProc.decs().vincula2(this);
+		decProc.is().procesa(this);
+		ts.remove(ts.size()-1);
 	}
 	
 	@Override

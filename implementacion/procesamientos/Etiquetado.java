@@ -212,13 +212,17 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	
 	@Override
 	public void procesa(Is_muchas is_muchas) throws Exception {
+		is_muchas.setEtqInic(etq);
 		is_muchas.is().procesa(this);
 		is_muchas.i().procesa(this);
+		is_muchas.setEtqSig(etq);
 	}
 
 	@Override
 	public void procesa(Is_una is_una) throws Exception {
+		is_una.setEtqInic(etq);
 		is_una.i().procesa(this);
+		is_una.setEtqSig(etq);
 	}
 
 

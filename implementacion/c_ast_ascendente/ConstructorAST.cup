@@ -46,7 +46,7 @@ non terminal  String Op0, Op3, Op4;
 non terminal  MemOp Op5;
 
 
-Prog ::= Decs:decs Insts:insts
+Prog ::= Decs:decs Insts:insts PUNTO
 	{: RESULT = sem.prog(decs, insts); :};
 	
 Decs ::= LDecs:ldecs
@@ -67,7 +67,7 @@ Dec ::= VAR ID:id DOSPUNTOS Tipo:tipo PUNTOCOMA
 Dec ::= TYPE ID:id DOSPUNTOS Tipo:tipo PUNTOCOMA
 	{: RESULT = sem.decTipo(tipo, id); :};
 	
-Dec ::= PROC ID:id PAR_AP PForms:pforms PAR_CIER Decs:decs Insts:insts PUNTOCOMA
+Dec ::= PROC ID:id PForms:pforms Decs:decs Insts:insts PUNTOCOMA
 	{: RESULT = sem.decProc(id, pforms, decs, insts); :};
 
 TipoBase ::= INT
@@ -82,11 +82,11 @@ TipoBase ::= STRING
 TipoBase ::= BOOL
 	{: RESULT = sem.tipoBool(); :};
 	
+TipoBase ::= ID:id
+	{: RESULT = sem.tipoRef(id); :};
+	
 Tipo ::= TipoBase:tipobase
 	{: RESULT = tipobase; :};
-	
-Tipo ::= ID:id
-	{: RESULT = sem.tipoRef(id); :};
 	
 Tipo ::= ARRAY CORCH_AP LITENT:litent CORCH_CIER OF TipoBase:tipobase
 	{: RESULT = sem.tipoArray(litent, tipobase); :};
@@ -136,13 +136,13 @@ LPReals ::= PReal:preal
 PReal ::= Exp:exp
 	{: RESULT = sem.pReal(exp); :};
 	
-Campos ::= Campos:campos PUNTOCOMA Campo:campo
+Campos ::= Campos:campos Campo:campo
 	{: RESULT = sem.campos_muchos(campos, campo); :};
 	
 Campos ::= Campo:campo
 	{: RESULT = sem.campos_uno(campo); :};
 	
-Campo ::= ID:id DOSPUNTOS Tipo:tipo
+Campo ::= ID:id DOSPUNTOS Tipo:tipo PUNTOCOMA
 	{: RESULT = sem.campo(tipo, id); :};
 	
 Insts ::= BEGIN LInstsAux:linstsaux END

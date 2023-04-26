@@ -104,7 +104,7 @@ padre^.izq^.der = null;
  @ dicho árbol en inorden.
  @ Por tanto, los nombres se listan ordenados alfabéticamente,
  @ y sin duplicados
- proc escribe_nombres(abrol: tArbol)
+ proc escribe_nombres(arbol: tArbol)
  begin
  if arbol != null then
  escribe_nombres(arbol^.izq);

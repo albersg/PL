@@ -45,7 +45,7 @@ public class Main {
 			prog.procesa(new AsignacionEspacio());
 			prog.procesa(new Etiquetado());
 
-			MaquinaP maquinaP = new MaquinaP(prog.getTam(), 10, 10, 10);
+			MaquinaP maquinaP = new MaquinaP(100, 10, 10, 10);
 			prog.procesa(new GeneracionCodigo(maquinaP));
 
 			System.out.println("Codigo de la MaquinaP");

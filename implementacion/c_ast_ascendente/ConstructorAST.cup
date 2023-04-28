@@ -196,8 +196,8 @@ Inst ::= NEW Exp:exp PUNTOCOMA
 Inst ::= DELETE Exp:exp PUNTOCOMA
 	{: RESULT = sem.delete(exp); :};
 	
-Inst ::= Exp:exp PReals:preals PUNTOCOMA
-	{: RESULT = sem.call(exp, preals); :};
+Inst ::= ID:id PReals:preals PUNTOCOMA
+	{: RESULT = sem.call(id, preals); :};
 	
 Inst ::= SEQ Decs:decs Insts:insts PUNTOCOMA
 	{: RESULT = sem.iComp(decs, insts); :};

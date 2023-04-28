@@ -73,6 +73,15 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 		this.procs = new Stack<DecProc>();
 	}
 	
+	
+	@Override
+	public void procesa(DecProc decProc) throws Exception {
+		decProc.decs().procesa(this);
+		decProc.is().procesa(this);
+		maquinaP.ponInstruccion(maquinaP.desactiva(decProc.getNivel(), decProc.getTam()));
+		maquinaP.ponInstruccion(maquinaP.irInd());
+		decProc.decs().recolecta_procs(this);
+	}
 
 	@Override
 	public void procesa(Div exp) throws Exception {
@@ -192,6 +201,7 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 	@Override
 	public void procesa(Prog prog) throws Exception {
 		prog.is().procesa(this);
+		maquinaP.ponInstruccion(maquinaP.stop());
 		prog.decs().recolecta_procs(this);
 		
 		while(!procs.empty()) {
@@ -346,12 +356,6 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 		
 		maquinaP.ponInstruccion(maquinaP.desactiva(iComp.getNivel(), iComp.getTam()));
 		maquinaP.ponInstruccion(maquinaP.irInd());
-	}
-
-	@Override
-	public void procesa(PReals pReals) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -694,8 +698,8 @@ public class GeneracionCodigo extends ProcesamientoPorDefecto{
 		maquinaP.ponInstruccion(maquinaP.dup());
 		maquinaP.ponInstruccion(maquinaP.apilaInt(pf.getDir()));
 		maquinaP.ponInstruccion(maquinaP.sumaInt());
-		preal.procesa(this);
-		if(preal.getEsDesig() && !pf.getEsParamRef())
+		preal.e().procesa(this);
+		if(preal.e().getEsDesig() && !pf.getEsParamRef())
 			maquinaP.ponInstruccion(maquinaP.mueve(pf.getTam()));
 		else
 			maquinaP.ponInstruccion(maquinaP.desapilaInd());

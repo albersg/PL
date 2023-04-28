@@ -49,6 +49,10 @@ import implementacion.asint.TinyASint.PForm_muchas;
 import implementacion.asint.TinyASint.PForm_una;
 import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
+import implementacion.asint.TinyASint.PReal;
+import implementacion.asint.TinyASint.PReal_muchos;
+import implementacion.asint.TinyASint.PReal_ninguno;
+import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
@@ -671,6 +675,48 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 
 	@Override
 	public void asiga_espacio_tipo(Tipo tipo) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PForm_una pForm_una) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PForm_muchas pForm_muchas) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PForm_vacia pForm_vacia) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PReal_uno pReal_uno) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PReal_muchos pReal_muchos) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PReal_ninguno pReal_vacia) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(PReal preal) throws Exception {
 		// TODO Auto-generated method stub
 		
 	}

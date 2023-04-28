@@ -76,6 +76,7 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	@Override
 	public void procesa(Prog prog) throws Exception {
 		prog.is().procesa(this);
+		etq++;
 		prog.decs().recolecta_procs(this);
 		
 		while(!procs.empty())  {
@@ -358,6 +359,16 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	@Override
 	public void procesa(PReals pReals) throws Exception {
 		
+	}
+	
+	@Override
+	public void procesa(DecProc decProc) throws Exception {
+		decProc.setEtqInic(etq);
+		decProc.decs().procesa(this);
+		decProc.is().procesa(this);
+		etq += 2;
+		decProc.decs().recolecta_procs(this);
+		decProc.setEtqSig(etq);
 	}
 
 	@Override
@@ -741,8 +752,8 @@ public class Etiquetado extends ProcesamientoPorDefecto{
 	
 	private void etiqueta_paso(PReal preal, PForm pf) throws Exception {
 		etq+=3;
-		preal.procesa(this);
-		if(preal.getEsDesig() && !pf.getEsParamRef())
+		preal.e().procesa(this);
+		if(preal.e().getEsDesig() && !pf.getEsParamRef())
 			etq++;
 		else
 			etq++;

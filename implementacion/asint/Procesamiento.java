@@ -49,6 +49,10 @@ import implementacion.asint.TinyASint.PForm_muchas;
 import implementacion.asint.TinyASint.PForm_una;
 import implementacion.asint.TinyASint.PForm_vacia;
 import implementacion.asint.TinyASint.PForms;
+import implementacion.asint.TinyASint.PReal;
+import implementacion.asint.TinyASint.PReal_muchos;
+import implementacion.asint.TinyASint.PReal_ninguno;
+import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.PReals;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
@@ -192,6 +196,18 @@ public interface Procesamiento {
 	void procesa(Dref dref)throws Exception;
 
 	void procesa(PForm pForm)throws Exception;
+	
+	void procesa(PForm_una pForm_una)throws Exception;
+
+	void procesa(PForm_muchas pForm_muchas)throws Exception;
+
+	void procesa(PForm_vacia pForm_vacia)throws Exception;
+	
+	void procesa(PReal_uno pReal_uno)throws Exception;
+
+	void procesa(PReal_muchos pReal_muchos)throws Exception;
+
+	void procesa(PReal_ninguno pReal_vacia)throws Exception;
 
 	void recolecta_procs(Decs_una decs_una)throws Exception;
 	void recolecta_procs(Decs_vacia decs_vacia)throws Exception;
@@ -269,6 +285,8 @@ public interface Procesamiento {
 	void asigna_espacio_tipo1(TipoInt tipoInt)throws Exception;
 
 	void asiga_espacio_tipo(Tipo tipo)throws Exception;
+
+	void procesa(PReal preal) throws Exception;
 	
 
 }

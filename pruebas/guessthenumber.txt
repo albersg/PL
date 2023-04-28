@@ -3,7 +3,7 @@ var guess: int;
 var attempts: int;
 var correct: bool;
 
-proc guessTheNumber(var numberToGuess: int)
+proc guessTheNumber(numberToGuess: int)
 begin
 correct = false;
 attempts = 0;
@@ -31,5 +31,6 @@ end; @ fin del procedimiento
 
 begin
 	@ Programa principal
-	guessTheNumber(24);
+	numberToGuess = 24;
+	guessTheNumber(numberToGuess);
 end.

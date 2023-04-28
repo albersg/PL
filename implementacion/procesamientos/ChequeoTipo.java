@@ -14,6 +14,7 @@ import implementacion.asint.TinyASint.DecTipo;
 import implementacion.asint.TinyASint.DecVar;
 import implementacion.asint.TinyASint.Decs_muchas;
 import implementacion.asint.TinyASint.Decs_una;
+import implementacion.asint.TinyASint.Decs_vacia;
 import implementacion.asint.TinyASint.Delete;
 import implementacion.asint.TinyASint.Distinto;
 import implementacion.asint.TinyASint.Div;
@@ -28,6 +29,7 @@ import implementacion.asint.TinyASint.Igual;
 import implementacion.asint.TinyASint.Indx;
 import implementacion.asint.TinyASint.Is_muchas;
 import implementacion.asint.TinyASint.Is_una;
+import implementacion.asint.TinyASint.Is_vacia;
 import implementacion.asint.TinyASint.LitInt;
 import implementacion.asint.TinyASint.LitReal;
 import implementacion.asint.TinyASint.LitStr;
@@ -79,6 +81,11 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 	public void procesa(Decs_muchas decs) throws Exception {
 		decs.decs().procesa(this);
 		decs.dec().procesa(this);
+	}
+	
+	@Override
+	public void procesa(Decs_vacia dec) throws Exception {
+		dec.setTipo(new TipoOk());
 	}
 
 	@Override
@@ -268,6 +275,48 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 		pFormRef.tipo().procesa(this);
 		pFormRef.setTipo(pFormRef.tipo().getTipo());
 	}
+	
+	@Override
+	public void procesa(PForm pForm) throws Exception {
+		pForm.tipo().procesa(this);
+		pForm.setTipo(pForm.tipo().getTipo());
+	}
+	
+	@Override
+	public void procesa(PForm_una pForm_una) throws Exception {
+		pForm_una.pform().procesa(this);
+		pForm_una.setTipo(pForm_una.pform().getTipo());
+	}
+
+	@Override
+	public void procesa(PForm_muchas pForm_muchas) throws Exception {
+		pForm_muchas.pforms().procesa(this);
+		pForm_muchas.pform().procesa(this);
+		pForm_muchas.setTipo(ambos_ok(pForm_muchas.pforms().getTipo(), pForm_muchas.pform().getTipo()));
+	}
+
+	@Override
+	public void procesa(PForm_vacia pForm_vacia) throws Exception {
+		pForm_vacia.setTipo(new TipoOk());
+	}
+
+	@Override
+	public void procesa(PReal_uno pReal_uno) throws Exception {
+		pReal_uno.preal().procesa(this);
+		pReal_uno.setTipo(pReal_uno.preal().getTipo());
+	}
+
+	@Override
+	public void procesa(PReal_muchos pReal_muchos) throws Exception {
+		pReal_muchos.preals().procesa(this);
+		pReal_muchos.preal().procesa(this);
+		pReal_muchos.setTipo(ambos_ok(pReal_muchos.preals().getTipo(), pReal_muchos.preal().getTipo()));		
+	}
+
+	@Override
+	public void procesa(PReal_ninguno pReal_vacia) throws Exception {
+		pReal_vacia.setTipo(new TipoOk());		
+	}
 
 	@Override
 	public void procesa(Is_muchas is_muchas) throws Exception {
@@ -280,6 +329,11 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 	public void procesa(Is_una is_una) throws Exception {
 		is_una.i().procesa(this);
 		is_una.setTipo(is_una.i().getTipo());
+	}
+	
+	@Override
+	public void procesa(Is_vacia is) throws Exception {
+		is.setTipo(new TipoOk());
 	}
 
 	@Override
@@ -300,6 +354,7 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 		campos_uno.campo().procesa(this);
 		campos_uno.setTipo(campos_uno.campo().getTipo());
 	}
+	
 	
 	// ??¿??¿?¿?¿¿??¿¿
 
@@ -423,19 +478,21 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 	@Override
 	public void procesa(Call call) throws Exception {
 		if(call.getVinculo() instanceof DecProc) {
-			DecProc dp = (DecProc) call.e().getVinculo();
-			if(call.preals().getTam() != dp.pf().getTam()) {
+			DecProc dp = (DecProc) call.getVinculo();
+			if(call.preals().nElem() != dp.pf().nElem()) {
 				call.setTipo(new TipoError());
 				System.out.println("Error: numero parametros call");
 				throw new Exception();
 			}
 			else {
+				Tipo tipoRet = null;
 				if(call.preals() instanceof PReal_ninguno)
-					chequeo_parametros((PReal_ninguno) call.preals(), (PForm_vacia) dp.pf());
+					tipoRet = chequeo_parametros((PReal_ninguno) call.preals(), (PForm_vacia) dp.pf());
 				else if(call.preals() instanceof PReal_uno)
-					chequeo_parametros((PReal_uno) call.preals(), (PForm_una) dp.pf());
+					tipoRet = chequeo_parametros((PReal_uno) call.preals(), (PForm_una) dp.pf());
 				else
-					chequeo_parametros((PReal_muchos) call.preals(), (PForm_muchas) dp.pf());
+					tipoRet = chequeo_parametros((PReal_muchos) call.preals(), (PForm_muchas) dp.pf());
+				call.setTipo(tipoRet);
 			}
 		}
 		else {
@@ -744,9 +801,9 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 	}
 	
 	private Tipo chequeo_parametro(PReal preal, PForm pform) throws Exception {
-		preal.procesa(this);
+		preal.e().procesa(this);
 		if(pform instanceof PFormRef) {
-			if(preal.getEsDesig() && son_compatibles(pform.tipo(), preal.getTipo())) {
+			if(preal.e().getEsDesig() && son_compatibles(pform.tipo(), preal.e().getTipo())) {
 				return new TipoOk();
 			}
 			else {
@@ -755,7 +812,7 @@ public class ChequeoTipo extends ProcesamientoPorDefecto{
 			}
 		}
 		else {
-			if(son_compatibles(pform.tipo(), preal.getTipo())) {
+			if(son_compatibles(pform.tipo(), preal.e().getTipo())) {
 				return new TipoOk();
 			}
 			else {

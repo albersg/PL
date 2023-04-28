@@ -820,6 +820,7 @@ public class TinyASint {
 		}
 		
 		public void procesa(Procesamiento p) throws Exception {
+			p.procesa(this);
 		}
 		public void vincula2(Procesamiento p) throws Exception {
 		}
@@ -850,7 +851,7 @@ public class TinyASint {
 		}
 	}
 	
-	public static class PForms extends Dec{
+	public static abstract class PForms extends Dec{
 		private int dir;
 		private int nivel;
 		
@@ -891,6 +892,8 @@ public class TinyASint {
 		public void setNivel(int nivel) {
 			this.nivel = nivel;
 		}
+		
+		public abstract int nElem();
 		
 	}
 	
@@ -953,6 +956,10 @@ public class TinyASint {
 		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
 		}
+		
+		public int nElem() {
+			return 0;
+		}
 	}
 
 	public static class PForm_muchas extends PForms {
@@ -971,6 +978,10 @@ public class TinyASint {
 
 		public PForms pforms() {
 			return pforms;
+		}
+		
+		public int nElem() {
+			return pforms.nElem() + 1;
 		}
 		
 
@@ -1001,6 +1012,11 @@ public class TinyASint {
 		
 		public void vincula2(Procesamiento p) throws Exception {
 			p.vincula2(this);
+		}
+
+		@Override
+		public int nElem() {
+			return 1;
 		}
 	}
 	
@@ -1248,17 +1264,17 @@ public class TinyASint {
 	}
 	
 	public static class Call extends I{
-		private Exp e;
+		private StringLocalizado id;
 		private PReals preals;
 		
-		public Call(Exp e, PReals preals) {
+		public Call(StringLocalizado id, PReals preals) {
 			super();
-			this.e = e;
+			this.id = id;
 			this.preals = preals;
 		}
 		
-		public Exp e() {
-			return e;
+		public StringLocalizado id() {
+			return id;
 		}
 		
 		public PReals preals() {
@@ -1413,10 +1429,11 @@ public class TinyASint {
 		}
 		
 		public void procesa(Procesamiento p) throws Exception {
+			p.procesa(this);
 		}
 	}
 	
-	public static class PReals extends Nodo{
+	public abstract static class PReals extends Nodo{
 		public PReals() {
 		}
 		
@@ -1428,6 +1445,8 @@ public class TinyASint {
 		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
+		
+		public abstract int nElem();
 	}
 	
 
@@ -1453,6 +1472,11 @@ public class TinyASint {
 		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
+
+		@Override
+		public int nElem() {
+			return preals().nElem() + 1;
+		}
 	}
 
 	public static class PReal_uno extends PReals {
@@ -1470,6 +1494,11 @@ public class TinyASint {
 		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
 		}
+
+		@Override
+		public int nElem() {
+			return 1;
+		}
 	}
 	
 	public static class PReal_ninguno extends PReals {
@@ -1480,6 +1509,11 @@ public class TinyASint {
 
 		public void procesa(Procesamiento p) throws Exception {
 			p.procesa(this);
+		}
+
+		@Override
+		public int nElem() {
+			return 0;
 		}
 	}
 	
@@ -2173,10 +2207,6 @@ public class TinyASint {
 		return new TipoPointer(t);
 	}
 	
-	public PForms pForms() {
-		return new PForms();
-	}
-	
 	public PForm pForm(StringLocalizado id, Tipo t) {
 		return new PForm(id,t);
 	}
@@ -2245,8 +2275,8 @@ public class TinyASint {
 		return new Delete(e);
 	}
 	
-	public Call call(Exp e, PReals preals) {
-		return new Call(e, preals);
+	public Call call(StringLocalizado id, PReals preals) {
+		return new Call(id, preals);
 	}
 	
 	public IComp iComp(Decs decs, Is is) {
@@ -2263,10 +2293,6 @@ public class TinyASint {
 	
 	public Campos_muchos campos_muchos(Campos cs, Campo c) {
 		return new Campos_muchos(cs, c);
-	}
-	
-	public PReals preals() {
-		return new PReals();
 	}
 	
 	public PReal_ninguno pReal_ninguno() {

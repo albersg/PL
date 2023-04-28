@@ -219,8 +219,14 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Call call) throws Exception {
-		call.e().procesa(this);
-		call.preals().procesa(this);
+		if(existe_id(call.id())) {
+			call.setVinculo(valorDe(call.id()));
+			call.preals().procesa(this);
+		}
+		else {
+			System.out.println("Error: call");
+			throw new Exception();
+		}
 	}
 
 	@Override
@@ -355,8 +361,10 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(PForm pForm) throws Exception {
-
+		pForm.tipo().procesa(this);
+		recolecta(pForm.id(), pForm);
 	}
+	
 
 	@Override
 	public void procesa(DecVar decVar) throws Exception {
@@ -380,6 +388,33 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		decProc.decs().vincula2(this);
 		decProc.is().procesa(this);
 		ts.remove(ts.size()-1);
+	}
+	
+	@Override
+	public void procesa(PForm_una pForm_una) throws Exception {
+		pForm_una.pform().procesa(this);
+	}
+
+	@Override
+	public void procesa(PForm_muchas pForm_muchas) throws Exception {
+		pForm_muchas.pforms().procesa(this);
+		pForm_muchas.pform().procesa(this);
+	}
+	
+	@Override
+	public void procesa(PReal_uno pReal_uno) throws Exception {
+		pReal_uno.preal().procesa(this);
+	}
+
+	@Override
+	public void procesa(PReal_muchos pReal_muchos) throws Exception {
+		pReal_muchos.preals().procesa(this);
+		pReal_muchos.preal().procesa(this);
+	}
+	
+	@Override
+	public void procesa(PReal preal) throws Exception {
+		preal.e().procesa(this);
 	}
 	
 	@Override

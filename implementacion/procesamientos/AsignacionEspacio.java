@@ -33,6 +33,10 @@ import implementacion.asint.TinyASint.Not;
 import implementacion.asint.TinyASint.Or;
 import implementacion.asint.TinyASint.PForm;
 import implementacion.asint.TinyASint.PFormRef;
+import implementacion.asint.TinyASint.PForm_muchas;
+import implementacion.asint.TinyASint.PForm_una;
+import implementacion.asint.TinyASint.PReal_muchos;
+import implementacion.asint.TinyASint.PReal_uno;
 import implementacion.asint.TinyASint.Prog;
 import implementacion.asint.TinyASint.Read;
 import implementacion.asint.TinyASint.Resta;
@@ -274,6 +278,28 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		pForm.setNivel(nivel);
 		pForm.tipo().asigna_espacio_tipo(this);
 		dir = dir + pForm.tipo().getTam();
+	}
+	
+	@Override
+	public void procesa(PForm_una pForm_una) throws Exception {
+		pForm_una.pform().procesa(this);
+	}
+
+	@Override
+	public void procesa(PForm_muchas pForm_muchas) throws Exception {
+		pForm_muchas.pforms().procesa(this);
+		pForm_muchas.pform().procesa(this);
+	}
+	
+	@Override
+	public void procesa(PReal_uno pReal_uno) throws Exception {
+		pReal_uno.preal().procesa(this);
+	}
+
+	@Override
+	public void procesa(PReal_muchos pReal_muchos) throws Exception {
+		pReal_muchos.preals().procesa(this);
+		pReal_muchos.preal().procesa(this);
 	}
 
 	@Override

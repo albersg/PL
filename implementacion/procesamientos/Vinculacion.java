@@ -4,51 +4,126 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import implementacion.asint.ProcesamientoPorDefecto;
-import implementacion.asint.TinyASint.*;
+import implementacion.asint.TinyASint.Acc;
+import implementacion.asint.TinyASint.And;
+import implementacion.asint.TinyASint.Asig;
+import implementacion.asint.TinyASint.Call;
+import implementacion.asint.TinyASint.Campo;
+import implementacion.asint.TinyASint.Campos_muchos;
+import implementacion.asint.TinyASint.Campos_uno;
+import implementacion.asint.TinyASint.Dec;
+import implementacion.asint.TinyASint.DecProc;
+import implementacion.asint.TinyASint.DecTipo;
+import implementacion.asint.TinyASint.DecVar;
+import implementacion.asint.TinyASint.Decs_muchas;
+import implementacion.asint.TinyASint.Decs_una;
+import implementacion.asint.TinyASint.Decs_vacia;
+import implementacion.asint.TinyASint.Delete;
+import implementacion.asint.TinyASint.Distinto;
+import implementacion.asint.TinyASint.Div;
+import implementacion.asint.TinyASint.Dref;
+import implementacion.asint.TinyASint.False;
+import implementacion.asint.TinyASint.IComp;
+import implementacion.asint.TinyASint.Id;
+import implementacion.asint.TinyASint.If_then;
+import implementacion.asint.TinyASint.If_then_else;
+import implementacion.asint.TinyASint.Igual;
+import implementacion.asint.TinyASint.Indx;
+import implementacion.asint.TinyASint.Is_muchas;
+import implementacion.asint.TinyASint.Is_una;
+import implementacion.asint.TinyASint.Is_vacia;
+import implementacion.asint.TinyASint.LitInt;
+import implementacion.asint.TinyASint.LitReal;
+import implementacion.asint.TinyASint.LitStr;
+import implementacion.asint.TinyASint.Mayor;
+import implementacion.asint.TinyASint.MayorIgual;
+import implementacion.asint.TinyASint.Menor;
+import implementacion.asint.TinyASint.MenorIgual;
+import implementacion.asint.TinyASint.Modulo;
+import implementacion.asint.TinyASint.Mul;
+import implementacion.asint.TinyASint.Negativo;
+import implementacion.asint.TinyASint.New;
+import implementacion.asint.TinyASint.Nl;
+import implementacion.asint.TinyASint.Not;
+import implementacion.asint.TinyASint.Null;
+import implementacion.asint.TinyASint.Or;
+import implementacion.asint.TinyASint.PForm;
+import implementacion.asint.TinyASint.PFormRef;
+import implementacion.asint.TinyASint.PForm_muchas;
+import implementacion.asint.TinyASint.PForm_una;
+import implementacion.asint.TinyASint.PForm_vacia;
+import implementacion.asint.TinyASint.PReal;
+import implementacion.asint.TinyASint.PReal_muchos;
+import implementacion.asint.TinyASint.PReal_uno;
+import implementacion.asint.TinyASint.PReals;
+import implementacion.asint.TinyASint.Prog;
+import implementacion.asint.TinyASint.Read;
+import implementacion.asint.TinyASint.Resta;
+import implementacion.asint.TinyASint.StringLocalizado;
+import implementacion.asint.TinyASint.Suma;
+import implementacion.asint.TinyASint.TipoArray;
+import implementacion.asint.TinyASint.TipoBool;
+import implementacion.asint.TinyASint.TipoInt;
+import implementacion.asint.TinyASint.TipoPointer;
+import implementacion.asint.TinyASint.TipoReal;
+import implementacion.asint.TinyASint.TipoRecord;
+import implementacion.asint.TinyASint.TipoRef;
+import implementacion.asint.TinyASint.TipoString;
+import implementacion.asint.TinyASint.True;
+import implementacion.asint.TinyASint.While;
+import implementacion.asint.TinyASint.Write;
 
-public class Vinculacion extends ProcesamientoPorDefecto{
+public class Vinculacion extends ProcesamientoPorDefecto {
+	private boolean error;
 
 	private Stack<HashMap<StringLocalizado, Dec>> ts;
 
 	public Vinculacion() throws Exception {
 		ts = new Stack<HashMap<StringLocalizado, Dec>>();
 		ts.add(new HashMap<StringLocalizado, Dec>());
+		error = false;
 	}
-	
-	
+
+	private void errorMsg(StringLocalizado id) {
+		error = true;
+		System.out.print("identificador \"" + id + "\" no existente.");
+		System.out.println("Fila: " + id.fila() + " Columna: " + id.col());
+	}
+
+	public boolean failed() {
+		return error;
+	}
+
 	private boolean existe_id(StringLocalizado id) throws Exception {
-	    for (HashMap<StringLocalizado, Dec> hm : ts)  {
-	        if (hm.containsKey(id))  {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-	
-	private Dec valorDe(StringLocalizado id) throws Exception {
-	    for (HashMap<StringLocalizado, Dec> hm : ts) {
-	        if (hm.containsKey(id)) {
-	            return hm.get(id);
-	        }
-	    }
-	    return null;
-	}
-	
-	private void recolecta(StringLocalizado id, Dec dec) throws Exception {
-		if(id_duplicado(id)) {
-			System.out.println("Error: id duplicado");
-			throw new Exception();
+		for (HashMap<StringLocalizado, Dec> hm : ts) {
+			if (hm.containsKey(id)) {
+				return true;
+			}
 		}
-		else
-			ts.peek().put(id, dec);
-	}
-	
-	private boolean id_duplicado(StringLocalizado id) throws Exception {
-		if(ts.peek().containsKey(id))
-			return true;
 		return false;
 	}
 
+	private Dec valorDe(StringLocalizado id) throws Exception {
+		for (HashMap<StringLocalizado, Dec> hm : ts) {
+			if (hm.containsKey(id)) {
+				return hm.get(id);
+			}
+		}
+		return null;
+	}
+
+	private void recolecta(StringLocalizado id, Dec dec) throws Exception {
+		if (id_duplicado(id)) {
+			error = true;
+			System.out.print("Error: identificador \"" + id + "\" duplicado");
+			System.out.println("Fila: " + id.fila() + " Columna: " + id.col());
+		} else
+			ts.peek().put(id, dec);
+	}
+
+	private boolean id_duplicado(StringLocalizado id) throws Exception {
+		return ts.peek().containsKey(id);
+	}
 
 	@Override
 	public void procesa(Decs_muchas decs) throws Exception {
@@ -69,12 +144,12 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Id exp) throws Exception {
-		if(existe_id(exp.s())) 
+		if (existe_id(exp.s()))
 			exp.setVinculo(valorDe(exp.s()));
 		else {
-			System.out.println("Error: id");
-			throw new Exception();
-	}
+			System.out.print("id: ");
+			errorMsg(exp.s());
+		}
 	}
 
 	@Override
@@ -102,14 +177,13 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		prog.is().procesa(this);
 	}
 
-
 	@Override
 	public void procesa(TipoRef tipoRef) throws Exception {
-		if(existe_id(tipoRef.id())) 
+		if (existe_id(tipoRef.id()))
 			tipoRef.setVinculo(valorDe(tipoRef.id()));
 		else {
-			System.out.println("Error: tipoRef");
-			throw new Exception();
+			System.out.print("tipoRef: ");
+			errorMsg(tipoRef.id());
 		}
 	}
 
@@ -125,7 +199,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(TipoPointer tipoPointer) throws Exception {
-		if(!(tipoPointer.tipo() instanceof TipoRef))
+		if (!(tipoPointer.tipo() instanceof TipoRef))
 			tipoPointer.tipo().procesa(this);
 	}
 
@@ -219,14 +293,20 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(Call call) throws Exception {
-		if(existe_id(call.id())) {
-			call.setVinculo(valorDe(call.id()));
-			call.preals().procesa(this);
+		if (call.e() instanceof Id) {
+			StringLocalizado id = call.e().id();
+			if (existe_id(id)) {
+				call.setVinculo(valorDe(id));
+				call.preals().procesa(this);
+			} else {
+				System.out.print("call: ");
+				errorMsg(id);
+			}
+		} else {
+			System.out.print("call: ");
+			errorMsg(call.e().id());
 		}
-		else {
-			System.out.println("Error: call");
-			throw new Exception();
-		}
+
 	}
 
 	@Override
@@ -353,7 +433,6 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		dref.e().procesa(this);
 	}
 
-
 	@Override
 	public void procesa(Decs_vacia dec_vacia) throws Exception {
 
@@ -364,14 +443,13 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		pForm.tipo().procesa(this);
 		recolecta(pForm.id(), pForm);
 	}
-	
 
 	@Override
 	public void procesa(DecVar decVar) throws Exception {
 		decVar.tipo().procesa(this);
 		recolecta(decVar.id(), decVar);
 	}
-	
+
 	@Override
 	public void procesa(DecTipo decTipo) throws Exception {
 		decTipo.tipo().procesa(this);
@@ -387,9 +465,9 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		decProc.pf().vincula2(this);
 		decProc.decs().vincula2(this);
 		decProc.is().procesa(this);
-		ts.remove(ts.size()-1);
+		ts.remove(ts.size() - 1);
 	}
-	
+
 	@Override
 	public void procesa(PForm_una pForm_una) throws Exception {
 		pForm_una.pform().procesa(this);
@@ -400,7 +478,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		pForm_muchas.pforms().procesa(this);
 		pForm_muchas.pform().procesa(this);
 	}
-	
+
 	@Override
 	public void procesa(PReal_uno pReal_uno) throws Exception {
 		pReal_uno.preal().procesa(this);
@@ -411,12 +489,12 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 		pReal_muchos.preals().procesa(this);
 		pReal_muchos.preal().procesa(this);
 	}
-	
+
 	@Override
 	public void procesa(PReal preal) throws Exception {
 		preal.e().procesa(this);
 	}
-	
+
 	@Override
 	public void vincula2(IComp iComp) throws Exception {
 		iComp.decs().vincula2(this);
@@ -424,7 +502,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void vincula2(DecProc decProc) throws Exception {
-		
+
 	}
 
 	@Override
@@ -450,37 +528,37 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void vincula2(Decs_vacia decs_vacia) throws Exception {
-		
+
 	}
 
 	@Override
 	public void vincula2(PFormRef pFormRef) throws Exception {
 		pFormRef.tipo().vincula2(this);
 	}
-	
+
 	@Override
 	public void vincula2(TipoRef tipoRef) throws Exception {
-		
+
 	}
 
 	@Override
 	public void vincula2(TipoInt tipoInt) throws Exception {
-		
+
 	}
 
 	@Override
 	public void vincula2(TipoReal tipoReal) throws Exception {
-		
+
 	}
 
 	@Override
 	public void vincula2(TipoBool tipoBool) throws Exception {
-		
+
 	}
 
 	@Override
 	public void vincula2(TipoString tipoString) throws Exception {
-		
+
 	}
 
 	@Override
@@ -495,12 +573,12 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void vincula2(TipoPointer tipoPointer) throws Exception {
-		if(tipoPointer.tipo() instanceof TipoRef)
+		if (tipoPointer.tipo() instanceof TipoRef)
 			tipoPointer.tipo().procesa(this);
 		else
 			tipoPointer.tipo().vincula2(this);
 	}
-	
+
 	@Override
 	public void vincula2(Campos_uno campos_uno) throws Exception {
 		campos_uno.campo().vincula2(this);
@@ -516,7 +594,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 	public void vincula2(Campo campo) throws Exception {
 		campo.tipo().vincula2(this);
 	}
-	
+
 	@Override
 	public void vincula2(PForm_una pForm_una) throws Exception {
 		pForm_una.pform().vincula2(this);
@@ -530,9 +608,7 @@ public class Vinculacion extends ProcesamientoPorDefecto{
 
 	@Override
 	public void vincula2(PForm_vacia pForm_vacia) throws Exception {
-		
-	}		
 
+	}
 
 }
-

@@ -1,0 +1,26 @@
+var op: StrInG;
+var n1: int;
+var n2: Real;
+bEgin
+wrIte 'Introduce un entero: ';
+read n1;
+write 'Introduce otro entero: ';
+read n2;
+write 'Introduce un operador (+,-,*,/): ';
+read op;
+if (op == '+') then
+	write n1 + n2; nl;
+else 
+ if (op == '-') then
+	write n1 - n2; nl;
+ eLse
+  if (op == '/') THEN
+	write n1 / n2; nl;
+  else
+   if (op == '*') then
+	write n1 * n2; nl;
+   end
+  end 
+ end
+end
+end.

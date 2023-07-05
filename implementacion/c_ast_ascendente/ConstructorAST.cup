@@ -3,7 +3,6 @@ package implementacion.c_ast_ascendente;
 import java_cup.runtime.*;
 import implementacion.semops.SemOps;
 import implementacion.asint.TinyASint.*;
-import implementacion.c_ast_ascendente.MemOp;
 
 
 scan with {: return getScanner().next_token(); :};
@@ -24,10 +23,9 @@ init with {:
 
 
 terminal MAS, MENOS, MUL, DIV, MOD, MENOR, MAYOR, MENORIG, MAYORIG, IGUAL, ASIG, DIST, PAR_AP,
-	PAR_CIER, PUNTOCOMA, CORCH_AP, CORCH_CIER, PUNTO, CIRCUN, COMA, DOSPUNTOS,INT, REAL, BOOL, STRING, AND, OR, NOT, NULL, TRUE,
-	FALSE, PROC, IF, THEN, ELSE, WHILE, DO, SEQ, BEGIN, END, RECORD, ARRAY, OF, NEW, DELETE, READ, WRITE, NL, VAR, TYPE;
+	PAR_CIER, PUNTOCOMA, CORCH_AP, CORCH_CIER, PUNTO, CIRCUN, COMA, DOSPUNTOS,INT, REAL, BOOL, STRING, AND, OR, NOT, PROC, IF, THEN, ELSE, WHILE, DO, SEQ, BEGIN, END, RECORD, ARRAY, OF, NEW, DELETE, READ, WRITE, NL, VAR, TYPE;
 	
-terminal StringLocalizado ID, LITENT, LITREAL, LITSTR;
+terminal StringLocalizado ID, LITENT, LITREAL, LITSTR, TRUE, FALSE, NULL;
 
 non terminal  Prog Prog;
 non terminal  Decs Decs, LDecs;
@@ -43,8 +41,7 @@ non terminal  Is Insts, LInstsAux, LInsts;
 non terminal  I Inst;
 non terminal  Exp Exp, Exp0, Exp1, Exp2, Exp3, Exp4, Exp5, Exp6;
 non terminal  String Op0, Op3, Op4;
-non terminal  MemOp Op5;
-
+non terminal  Null PuntoComaONada;
 
 Prog ::= Decs:decs Insts:insts PUNTO
 	{: RESULT = sem.prog(decs, insts); :};
@@ -159,26 +156,23 @@ LInsts ::= LInsts:linsts Inst:inst
 	
 LInsts ::= Inst:inst
 	{: RESULT = sem.is_una(inst); :};
+
+PuntoComaONada ::= PUNTOCOMA
+	{: RESULT = null; :};
+
+PuntoComaONada ::= 
+	{: RESULT = null; :};
 	
 Inst ::= Exp:exp0 ASIG Exp:exp1 PUNTOCOMA
 	{: RESULT = sem.asig(exp0, exp1); :};
 	
-Inst ::= IF Exp:exp THEN LInsts:linsts END
+Inst ::= IF Exp:exp THEN LInsts:linsts END PuntoComaONada
 	{: RESULT = sem.if_then(exp, linsts); :};
-	
-Inst ::= IF Exp:exp THEN LInsts:linsts END PUNTOCOMA
-	{: RESULT = sem.if_then(exp, linsts); :};
-	
-Inst ::= IF Exp:exp THEN LInsts:linsts0 ELSE LInsts:linsts1 END
+
+Inst ::= IF Exp:exp THEN LInsts:linsts0 ELSE LInsts:linsts1 END PuntoComaONada
 	{: RESULT = sem.if_then_else(exp, linsts0, linsts1); :};
-	
-Inst ::= IF Exp:exp THEN LInsts:linsts0 ELSE LInsts:linsts1 END PUNTOCOMA
-	{: RESULT = sem.if_then_else(exp, linsts0, linsts1); :};
-	
-Inst ::= WHILE Exp:exp DO LInsts:linsts END
-	{: RESULT = sem.while1(exp, linsts); :};
-	
-Inst ::= WHILE Exp:exp DO LInsts:linsts END PUNTOCOMA
+
+Inst ::= WHILE Exp:exp DO LInsts:linsts END PuntoComaONada
 	{: RESULT = sem.while1(exp, linsts); :};
 	
 Inst ::= READ Exp:exp PUNTOCOMA
@@ -196,13 +190,10 @@ Inst ::= NEW Exp:exp PUNTOCOMA
 Inst ::= DELETE Exp:exp PUNTOCOMA
 	{: RESULT = sem.delete(exp); :};
 	
-Inst ::= ID:id PReals:preals PUNTOCOMA
-	{: RESULT = sem.call(id, preals); :};
+Inst ::= Exp:exp PReals:preals PUNTOCOMA
+	{: RESULT = sem.call(exp, preals); :};
 	
-Inst ::= SEQ Decs:decs Insts:insts PUNTOCOMA
-	{: RESULT = sem.iComp(decs, insts); :};
-	
-Inst ::= SEQ Decs:decs Insts:insts 
+Inst ::= SEQ Decs:decs Insts:insts PuntoComaONada
 	{: RESULT = sem.iComp(decs, insts); :};
 	
 Exp ::= Exp0:exp0
@@ -277,20 +268,17 @@ Op4 ::= MENOS
 Op4 ::= NOT
 	{: RESULT = "not"; :};
 	
-Exp5 ::= Exp5:exp5 Op5:op5
-	{: RESULT = sem.exp_mem(op5.op, op5.exp, op5.valor, exp5); :};
+Exp5 ::= Exp5:exp5 CORCH_AP Exp0:exp0 CORCH_CIER
+	{: RESULT = sem.indx(exp5, exp0); :};
+
+Exp5 ::= Exp5:exp5 CIRCUN
+	{: RESULT = sem.dref(exp5); :};
+
+Exp5 ::= Exp5:exp5 PUNTO ID:id
+	{: RESULT = sem.acc(exp5, id); :};
 	
 Exp5 ::= Exp6:exp6
 	{: RESULT = exp6; :};
-	
-Op5 ::= CORCH_AP Exp:exp CORCH_CIER
-	{: RESULT = new MemOp("indx", exp, null); :};
-	
-Op5 ::= PUNTO ID:id
-	{: RESULT = new MemOp("acc", null, id); :};
-	
-Op5 ::= CIRCUN PUNTO ID:id
-	{: RESULT = new MemOp("dref", null, id); :};
 	
 Exp6 ::= LITENT:litent
 	{: RESULT = sem.litInt(litent); :};
@@ -301,17 +289,17 @@ Exp6 ::= LITREAL:litreal
 Exp6 ::= LITSTR:litstr
 	{: RESULT = sem.litStr(litstr); :};
 	
-Exp6 ::= TRUE
-	{: RESULT = sem.true1(); :};
+Exp6 ::= TRUE:true1
+	{: RESULT = sem.true1(true1); :};
 	
-Exp6 ::= FALSE
-	{: RESULT = sem.false1(); :};
+Exp6 ::= FALSE:false1
+	{: RESULT = sem.false1(false1); :};
 	
 Exp6 ::= ID:id
 	{: RESULT = sem.id(id); :};
 	
-Exp6 ::= NULL
-	{: RESULT = sem.null1(); :};
+Exp6 ::= NULL:null1
+	{: RESULT = sem.null1(null1); :};
 	
 Exp6 ::= PAR_AP Exp0:exp0 PAR_CIER
 	{: RESULT = exp0; :};

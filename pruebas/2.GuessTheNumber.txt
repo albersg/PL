@@ -1,0 +1,36 @@
+var numberToGuess: int;
+var guess: int;
+var attempts: int;
+var correct: bool;
+
+proc guessTheNumber(numberToGuess: int)
+begin
+correct = false;
+attempts = 0;
+while not correct do
+    write 'Adivina el numero (entre 1 y 100): ';
+    read guess;
+    attempts = attempts + 1;
+
+    if (guess == numberToGuess) then
+        correct = true;
+        write 'Correcto! El numero era ';
+	  write numberToGuess; nl;
+        write 'Te ha llevado ';
+	  write attempts;
+	  write ' intentos.'; nl;
+    else 
+     if (guess < numberToGuess) then
+      write 'El numero es mayor.'; nl;
+     else
+      write 'El numero es menor.'; nl;
+     end
+    end
+end
+end; @ fin del procedimiento
+
+begin
+	@ Programa principal
+	numberToGuess = 29;
+	guessTheNumber(numberToGuess);
+end.

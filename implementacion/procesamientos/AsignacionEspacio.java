@@ -53,15 +53,15 @@ import implementacion.asint.TinyASint.TipoString;
 import implementacion.asint.TinyASint.While;
 import implementacion.asint.TinyASint.Write;
 
-public class AsignacionEspacio extends ProcesamientoPorDefecto{
+public class AsignacionEspacio extends ProcesamientoPorDefecto {
 	private int dir;
 	private int nivel;
-	
+
 	public AsignacionEspacio() throws Exception {
 		dir = 0;
 		nivel = 0;
 	}
-	
+
 	@Override
 	public void procesa(Decs_muchas decs) throws Exception {
 		decs.decs().procesa(this);
@@ -78,8 +78,6 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		exp.arg0().procesa(this);
 		exp.arg1().procesa(this);
 	}
-
-
 
 	@Override
 	public void procesa(Mul exp) throws Exception {
@@ -105,16 +103,14 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		prog.is().procesa(this);
 	}
 
-
 	@Override
 	public void procesa(PFormRef pFormRef) throws Exception {
 		pFormRef.setDir(dir);
 		pFormRef.setNivel(nivel);
 		pFormRef.tipo().asigna_espacio_tipo(this);
+		pFormRef.setTam(1);
 		dir = dir + 1;
 	}
-	
-
 
 	@Override
 	public void procesa(Is_muchas is_muchas) throws Exception {
@@ -137,7 +133,6 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 	public void procesa(Campos_muchos campos_muchos) throws Exception {
 		campos_muchos.campos().procesa(this);
 		campos_muchos.campo().procesa(this);
-		campos_muchos.campo().setDesp(campos_muchos.campos().getTam());
 		campos_muchos.setTam(campos_muchos.campos().getTam() + campos_muchos.campo().getTam());
 	}
 
@@ -145,7 +140,6 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 	public void procesa(Campos_uno campos_uno) throws Exception {
 		campos_uno.campo().procesa(this);
 		campos_uno.setTam(campos_uno.campo().getTam());
-		campos_uno.campo().setDesp(0);
 	}
 
 	@Override
@@ -200,11 +194,16 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 
 	@Override
 	public void procesa(IComp iComp) throws Exception {
+		int ant_dir = dir;
+		nivel++;
+		iComp.setNivel(nivel);
+		dir = 0;
 		iComp.decs().procesa(this);
 		iComp.is().procesa(this);
+		iComp.setTam(dir);
+		dir = ant_dir;
+		nivel--;
 	}
-
-	
 
 	@Override
 	public void procesa(Menor menor) throws Exception {
@@ -217,7 +216,6 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		mayor.arg0().procesa(this);
 		mayor.arg1().procesa(this);
 	}
-
 
 	@Override
 	public void procesa(MayorIgual mayorIgual) throws Exception {
@@ -271,15 +269,15 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		not.e().procesa(this);
 	}
 
-
 	@Override
 	public void procesa(PForm pForm) throws Exception {
 		pForm.setDir(dir);
 		pForm.setNivel(nivel);
 		pForm.tipo().asigna_espacio_tipo(this);
+		pForm.setTam(pForm.tipo().getTam());
 		dir = dir + pForm.tipo().getTam();
 	}
-	
+
 	@Override
 	public void procesa(PForm_una pForm_una) throws Exception {
 		pForm_una.pform().procesa(this);
@@ -290,7 +288,7 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		pForm_muchas.pforms().procesa(this);
 		pForm_muchas.pform().procesa(this);
 	}
-	
+
 	@Override
 	public void procesa(PReal_uno pReal_uno) throws Exception {
 		pReal_uno.preal().procesa(this);
@@ -309,7 +307,7 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		decVar.tipo().asigna_espacio_tipo(this);
 		dir = dir + decVar.tipo().getTam();
 	}
-	
+
 	@Override
 	public void procesa(DecTipo decTipo) throws Exception {
 		decTipo.tipo().asigna_espacio_tipo(this);
@@ -328,10 +326,10 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 		dir = ant_dir;
 		nivel--;
 	}
-	
+
 	@Override
 	public void asiga_espacio_tipo(Tipo tipo) throws Exception {
-		if(tipo.getTam() == -1) {
+		if (tipo.getTam() == -1) {
 			tipo.asigna_espacio_tipo1(this);
 			tipo.asigna_espacio_tipo2(this);
 		}
@@ -378,17 +376,16 @@ public class AsignacionEspacio extends ProcesamientoPorDefecto{
 	@Override
 	public void asigna_espacio_tipo1(TipoPointer tipoPointer) throws Exception {
 		tipoPointer.setTam(1);
-		if(!(tipoPointer.tipo() instanceof TipoRef))
+		if (!(tipoPointer.tipo() instanceof TipoRef))
 			tipoPointer.tipo().asigna_espacio_tipo1(this);
 	}
-	
+
 	@Override
 	public void asigna_espacio_tipo2(TipoPointer tipoPointer) throws Exception {
-		if(tipoPointer.tipo() instanceof TipoRef){
-			((DecTipo)tipoPointer.getVinculo()).tipo().asigna_espacio_tipo1(this);
-			tipoPointer.setTam(((DecTipo)tipoPointer.getVinculo()).tipo().getTam());
-		}
-		else
+		if (tipoPointer.tipo() instanceof TipoRef) {
+			((DecTipo) tipoPointer.tipo().getVinculo()).tipo().asigna_espacio_tipo1(this);
+			tipoPointer.setTam(((DecTipo) tipoPointer.tipo().getVinculo()).tipo().getTam());
+		} else
 			tipoPointer.tipo().asigna_espacio_tipo2(this);
 	}
 }

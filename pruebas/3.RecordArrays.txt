@@ -1,0 +1,48 @@
+type tArbol: ^tNodo;
+type tNodo: record
+ nombre: string;
+ izq: tArbol;
+ der: tArbol;
+ end;
+type tListaNombres: record
+ nombres: array [50] of string;
+ cont: int;
+ end;
+var nombres: tListaNombres; @ Aquí se guardarán los nombres leídos (max. 50)
+var arbol: tArbol; @ Aquí se construirá un árbol de búsqueda que contendrá
+
+proc lee_nombres(var nombres: tListaNombres)
+ var i: int;
+ begin
+ write 'Introduce el número de nombres (max 50): ';
+ nl;
+ read nombres.cont;
+ while (nombres.cont < 0) or (nombres.cont > 50) do
+ write 'Introduce el número de nombres (max 50): '; nl;
+ read nombres.cont;
+ end;
+ i=0;
+ write 'Introduce un nombre en cada línea: '; nl;
+ while i < nombres.cont do
+ read nombres.nombres[i];
+ i = i + 1;
+ end;
+ end; @ del procedimiento lee_nombres
+
+ proc escribe_nombres(var nombres: tListaNombres)
+ var i: int;
+ begin
+ i=0;
+ while i < nombres.cont do
+ write nombres.nombres[i]; nl;
+ i = i + 1;
+ end;
+ end; @ del procedimiento escribe_nombres
+
+begin
+
+ @ Programa principal
+ lee_nombres(nombres);
+ escribe_nombres(nombres);
+
+end.

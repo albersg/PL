@@ -2,8 +2,8 @@ package implementacion.maquinaP;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.Scanner;
+import java.util.Stack;
 
 
 public class MaquinaP {
@@ -822,7 +822,7 @@ public class MaquinaP {
 	
 	private class IReadInt implements Instruccion {
 		public void ejecuta() {
-			ValorInt opnd = new ValorInt(in.nextInt());
+			ValorInt opnd = new ValorInt(Integer.parseInt(in.nextLine()));
 			pilaEvaluacion.push(opnd);
 			pc++;
 		}
@@ -834,7 +834,7 @@ public class MaquinaP {
 	
 	private class IReadReal implements Instruccion {
 		public void ejecuta() {
-			ValorReal opnd = new ValorReal(in.nextDouble());
+			ValorReal opnd = new ValorReal(Double.parseDouble(in.nextLine()));
 			pilaEvaluacion.push(opnd);
 			pc++;
 		}
@@ -1152,6 +1152,9 @@ public class MaquinaP {
 		datos = new Valor[tamdatos + tampila + tamheap];
 		this.pc = 0;
 		this.in = new Scanner(System.in);
+		
+		IINT2REAL = new IInt2Real();
+		
 		ISUMAINT = new ISumaInt();
 		ISUMAREAL = new ISumaReal();
 		IRESTAINT = new IRestaInt();

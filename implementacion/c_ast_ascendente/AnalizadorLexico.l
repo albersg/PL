@@ -45,49 +45,50 @@ div = \/
 mod = %
 menor = <
 mayor = >
-menorig = <\=
-mayorig = >\=
-igual = \=\=
-asig = \=
-dist = \!\=
+menorig = <=
+mayorig = >=
+igual = ==
+asig = =
+dist = \!=
 par_ap = \(
 par_cier = \)
 puntocoma = ;
 corch_ap = \[
 corch_cier = \]
-punto = \.
-dospuntos = \:
+punto = .
+dospuntos = :
 circun = \^
-coma = \,
-int = int
-real = real
-bool = bool
-string = string
-and = and
-or = or
-not = not
-null = null
-true = true
-false = false
-proc = proc
-if = if
-then = then
-else = else
-while= while
-do= do
-seq= seq
-begin= begin
-end= end
-record= record
-array= array
-of= of
-new= new
-delete= delete
-read= read
-write= write
-nl= nl
-var= var
-type= type
+coma = ,
+int= (i|I)(n|N)(t|T)
+real = (r|R)(e|E)(a|A)(l|L)
+bool = (b|B)(o|O)(o|O)(l|L)
+string = (s|S)(t|T)(r|R)(i|I)(n|N)(g|G)
+and = (a|A)(n|N)(d|D)
+or = (o|O)(r|R)
+not = (n|N)(o|O)(t|T)
+null = (n|N)(u|U)(l|L)(l|L)
+true = (t|T)(r|R)(u|U)(e|E)
+false = (f|F)(a|A)(l|L)(s|S)(e|E)
+proc = (p|P)(r|R)(o|O)(c|C)
+if = (i|I)(f|F)
+then = (t|T)(h|H)(e|E)(n|N)
+else = (e|E)(l|L)(s|S)(e|E)
+while = (w|W)(h|H)(i|I)(l|L)(e|E)
+do = (d|D)(o|O)
+seq = (s|S)(e|E)(q|Q)
+begin = (b|B)(e|E)(g|G)(i|I)(n|N)
+end = (e|E)(n|N)(d|D)
+record = (r|R)(e|E)(c|C)(o|O)(r|R)(d|D)
+array = (a|A)(r|R)(r|R)(a|A)(y|Y)
+of = (o|O)(f|F)
+new = (n|N)(e|E)(w|W)
+delete = (d|D)(e|E)(l|L)(e|E)(t|T)(e|E)
+read = (r|R)(e|E)(a|A)(d|D)
+write = (w|W)(r|R)(i|I)(t|T)(e|E)
+nl = (n|N)(l|L)
+var = (v|V)(a|A)(r|R)
+type = (t|T)(y|Y)(p|P)(e|E)
+
 separador = [ |\n|\r|\b|\t]
 comentario = @[^\n]*
 
@@ -128,6 +129,9 @@ comentario = @[^\n]*
 {litstr}           {return ops.token(ClaseLexica.LITSTR);}
 {litent}                  {return ops.token(ClaseLexica.LITENT);}
 {litreal}                   {return ops.token(ClaseLexica.LITREAL);}
+{circun}                  {return ops.token(ClaseLexica.CIRCUN);}
+{coma}                   {return ops.token(ClaseLexica.COMA);}
+{dospuntos}                   {return ops.token(ClaseLexica.DOSPUNTOS);}
 {mas}               {return ops.token(ClaseLexica.MAS);}
 {menos}              {return ops.token(ClaseLexica.MENOS);}
 {mul}               {return ops.token(ClaseLexica.MUL);}
@@ -146,7 +150,4 @@ comentario = @[^\n]*
 {corch_ap}           {return ops.token(ClaseLexica.CORCH_AP);}
 {corch_cier}               {return ops.token(ClaseLexica.CORCH_CIER);}
 {punto}              {return ops.token(ClaseLexica.PUNTO);}
-{circun}                  {return ops.token(ClaseLexica.CIRCUN);}
-{coma}                   {return ops.token(ClaseLexica.COMA);}
-{dospuntos}                   {return ops.token(ClaseLexica.DOSPUNTOS);}
 [^]                       {errores.errorLexico(fila(),lexema());}         

@@ -1,13 +1,11 @@
 options  {
   STATIC=false;
+  IGNORE_CASE=true;
 }  
 PARSER_BEGIN(ConstructorAST)
 package implementacion.c_ast_descendente;
 
-import implementacion.asint.TinyASint.Exp;
-import implementacion.asint.TinyASint.Dec;
-import implementacion.asint.TinyASint.Decs;
-import implementacion.asint.TinyASint.Prog;
+import implementacion.asint.TinyASint.*;
 import implementacion.semops.SemOps;
 
 
@@ -16,79 +14,79 @@ public class ConstructorAST {
 }
 PARSER_END(ConstructorAST)
 
-  TOKEN:{<#letra:["A"-"Z"],["a"-"z"]>}
+  TOKEN:{<#letra:["A"-"Z","a"-"z"]>}
   TOKEN:{<#dpos:["1"-"9"]>}
   TOKEN:{<#dig:<dpos>|"0">}
   TOKEN:{<#pdec:"." ((<dig>)*<dpos>|"0")>}
-  TOKEN:{<#pexp:["e","E"] <litent>>}
+  TOKEN:{<#pexp:["e","E"] <Litent>>}
   TOKEN:{<#signo:["+","-"]>}
   SKIP:{<["\t"," ","\r","\b","\n"]>}  
   SKIP:{<"@"(~["\n"])*>}  
-  TOKEN:{<int: "int">}
-  TOKEN:{<real: "real">}
-  TOKEN:{<bool: "bool">}
-  TOKEN:{<string: "string">}
-  TOKEN:{<and: "and">}
-  TOKEN:{<or: "or">}
-  TOKEN:{<not: "not">}
-  TOKEN:{<null: "null">}
-  TOKEN:{<true: "true">}
-  TOKEN:{<false: "false">}
-  TOKEN:{<proc: "proc">}
-  TOKEN:{<if: "if">}
-  TOKEN:{<then: "then">}
-  TOKEN:{<else: "else">}
-  TOKEN:{<while: "while">}
-  TOKEN:{<do: "do">}
-  TOKEN:{<seq: "seq">}
-  TOKEN:{<begin: "begin">}
-  TOKEN:{<end: "end">}
-  TOKEN:{<record: "record">}
-  TOKEN:{<array: "array">}
-  TOKEN:{<of: "of">}
-  TOKEN:{<new: "new">}
-  TOKEN:{<delete: "delete">}
-  TOKEN:{<read: "read">}
-  TOKEN:{<write: "write">}
-  TOKEN:{<nl: "nl">}
-  TOKEN:{<var: "var">}
-  TOKEN:{<type: "type">}
-  TOKEN:{<id:<letra>(<letra>|<dig>)*>}
-  TOKEN:{<litent:(<signo>)?((<dpos>(<dig>)*)|"0")>}
-  TOKEN:{<litreal:<litent>(<pdec>|<pexp>|<pdec><pexp>)>}
-  TOKEN:{<litstr:"'" (~["\b", "\r", "\n", "'"])* "'">}
+  TOKEN:{<Int: "int">}
+  TOKEN:{<Real: "real">}
+  TOKEN:{<Bool: "bool">}
+  TOKEN:{<String: "string">}
+  TOKEN:{<And: "and">}
+  TOKEN:{<Or: "or">}
+  TOKEN:{<Not: "not">}
+  TOKEN:{<Null: "null">}
+  TOKEN:{<True: "true">}
+  TOKEN:{<False: "false">}
+  TOKEN:{<Proc: "proc">}
+  TOKEN:{<If: "if">}
+  TOKEN:{<Then: "then">}
+  TOKEN:{<Else: "else">}
+  TOKEN:{<While: "while">}
+  TOKEN:{<Do: "do">}
+  TOKEN:{<Seq: "seq">}
+  TOKEN:{<Begin: "begin">}
+  TOKEN:{<End: "end">}
+  TOKEN:{<Record: "record">}
+  TOKEN:{<Array: "array">}
+  TOKEN:{<Of: "of">}
+  TOKEN:{<New: "new">}
+  TOKEN:{<Delete: "delete">}
+  TOKEN:{<Read: "read">}
+  TOKEN:{<Write: "write">}
+  TOKEN:{<Nl: "nl">}
+  TOKEN:{<Var: "var">}
+  TOKEN:{<Type: "type">}
+  TOKEN:{<Id:<letra>(<letra>|<dig>|"_")*>}
+  TOKEN:{<Litent:(<signo>)?((<dpos>(<dig>)*)|"0")>}
+  TOKEN:{<Litreal:<Litent>(<pdec>|<pexp>|<pdec><pexp>)>}
+  TOKEN:{<Litstr:"'" (~["\b", "\r", "\n", "'"])* "'">}
   
   
   Prog Init()    : {Prog prog;} {prog=Prog() <EOF> {return prog;}}
   
-  Prog Prog()    : {Decs decs; Insts insts; } 
-                    {decs = Decs() insts = Is() "." {return sem.prog(decs,insts);}}
+  Prog Prog()    : {Decs decs; Is insts; } 
+                    {decs = Decs() insts = Insts() "." {return sem.prog(decs,insts);}}
   Decs Decs()    : {Decs decs;} 
-  					{decs = LDecs()	{return decs;} | {return sem.prog(decs_vacia());}}
+  					{decs = LDecs()	{return decs;} | {return sem.decs_vacia();}}
   					
   Decs LDecs()	 : {Dec dec; Decs rldecs;}
   					{dec = Dec() rldecs = RLDecs(sem.decs_una(dec)) {return rldecs;}}
   					
-  Decs RLDecs(rldecs0h) : {Dec dec; Decs rldecs1;}
+  Decs RLDecs(Decs rldecs0h) : {Dec dec; Decs rldecs1;}
   					{dec = Dec() rldecs1 = RLDecs(sem.decs_muchas(rldecs0h, dec)) {return rldecs1;} |
   					{return rldecs0h;}} 
   					
-  Dec Dec()		 : {Token id; Tipo tipo; PForms pforms; Decs decs; Insts insts;}
-  					{<var> id=<id> tipo=Tipo() ";" {return sem.decVar(tipo, new StringLocalizado(id));} |
-  					<type> id=<id> tipo=Tipo() ";"{return sem.decTipo(tipo, new StringLocalizado(id));} |
-  					<proc> id=<id> pforms=PForms() decs=Decs() insts=Insts() ";" {return sem.decProc(new StringLocalizado(id),pforms,decs,insts);}
+  Dec Dec()		 : {Token id; Tipo tipo; PForms pforms; Decs decs; Is insts;}
+  					{<Var> id=<Id> ":" tipo=Tipo() ";" {return sem.decVar(tipo, new StringLocalizado(id));} |
+  					<Type> id=<Id> ":" tipo=Tipo() ";"{return sem.decTipo(tipo, new StringLocalizado(id));} |
+  					<Proc> id=<Id> pforms=PForms() decs=Decs() insts=Insts() ";" {return sem.decProc(new StringLocalizado(id),pforms,decs,insts);}}
   					
-  Tipo TipoBase() : {}
-  					{<int> {return sem.tipoInt();} |
-  					<real> {return sem.tipoReal();} |
-  					<string> {return sem.tipoString();} |
-  					<bool> {return sem.tipoBool();}}
+  Tipo TipoBase() : {Token id;}
+  					{<Int> {return sem.tipoInt();} |
+  					<Real> {return sem.tipoReal();} |
+  					<String> {return sem.tipoString();} |
+  					<Bool> {return sem.tipoBool();} |
+  					id=<Id> {return sem.tipoRef(new StringLocalizado(id));}}
   					
   Tipo Tipo()	: {Tipo tipo; Token id; Campos campos;}
   					{tipo=TipoBase() {return tipo;} |
-  					id=<id> {return sem.tipoRef(new StringLocalizado(id));} |
-  					<array> "[" id=<lent> "]" <of> tipo=TipoBase() {return sem.tipoArray(new StringLocalizado(id), tipo);} |
-  					<record> campos=Campos() <end> {return sem.tipoRecord(campos);} |
+  					<Array> "[" id=<Litent> "]" <Of> tipo=TipoBase() {return sem.tipoArray(new StringLocalizado(id), tipo);} |
+  					<Record> campos=Campos() <End> {return sem.tipoRecord(campos);} |
   					"^" tipo=TipoBase() {return sem.tipoPointer(tipo);}}
   					
   					
@@ -99,16 +97,16 @@ PARSER_END(ConstructorAST)
  					{pforms=LPForms() {return pforms;} | {return sem.pForm_vacia();}}
  					
  PForms LPForms() : {PForm pform; PForms pforms;}
- 					{pform=PForm() pforms=RLPForms(pForm_una(pform)) {return pforms;}}
+ 					{pform=PForm() pforms=RLPForms(sem.pForm_una(pform)) {return pforms;}}
  					
  					
- PForms RLPForms(pforms0h) : {PForm pform; PForms pforms1;}
+ PForms RLPForms(PForms pforms0h) : {PForm pform; PForms pforms1;}
  					{"," pform=PForm() pforms1=RLPForms(sem.pForm_muchas(pforms0h, pform)) {return pforms1;} |
  					{return pforms0h;}}
  					
  PForm PForm() : {Token id; Tipo tipo;}
- 					{<var> id=<id> ":" tipo=Tipo() {return sem.pFormRef(new StringLocalizado(id), tipo);} |
- 					id=<id> ":" tipo=Tipo() {return sem.pForm(new StringLocalizado(id), tipo);}}
+ 					{<Var> id=<Id> ":" tipo=Tipo() {return sem.pFormRef(new StringLocalizado(id), tipo);} |
+ 					id=<Id> ":" tipo=Tipo() {return sem.pForm(new StringLocalizado(id), tipo);}}
  					
  PReals PReals() : {PReals preals;}
  					{"(" preals=LPRealsPar() ")" {return preals;}}
@@ -117,10 +115,10 @@ PARSER_END(ConstructorAST)
  					{preals=LPReals() {return preals;} | {return sem.pReal_ninguno();}}
  					
  PReals LPReals() : {PReal preal; PReals preals;}
- 					{preal=PReal() preals=RLPReals(pReal_uno(preal)) {return preals;}}
+ 					{preal=PReal() preals=RLPReals(sem.pReal_uno(preal)) {return preals;}}
  					
  					
- PReals RLPReals(preals0h) : {PReal preal; PReals preals1;}
+ PReals RLPReals(PReals preals0h) : {PReal preal; PReals preals1;}
  					{"," preal=PReal() preals1=RLPReals(sem.pReal_muchos(preals0h, preal)) {return preals1;} |
  					{return preals0h;}}
  					
@@ -131,54 +129,57 @@ PARSER_END(ConstructorAST)
  Campos Campos() : {Campo campo; Campos campos;}
  					{campo=Campo() campos=RCampos(sem.campos_uno(campo)) {return campos;}}
  					
- Campos RCampos(campos0) : {Campo campo; Campos campos1;}
- 					{campo=Campo() campos1=RCampos(sem.campos_muchos(campos0, campo) {return campos1;} |
+ Campos RCampos(Campos campos0) : {Campo campo; Campos campos1;}
+ 					{campo=Campo() campos1=RCampos(sem.campos_muchos(campos0, campo)) {return campos1;} |
  					{return campos0;}}
  					
  Campo Campo() : {Token id; Tipo tipo;}
- 					{id=<id> ":" tipo=Tipo() ";" {return sem.campo(tipo, new StringLocalizado(id));}}
+ 					{id=<Id> ":" tipo=Tipo() ";" {return sem.campo(tipo, new StringLocalizado(id));}}
  					
  					
  					
-Insts Insts() : {Is insts;}
-					{insts=LInstsAux() {return insts;}}
+Is Insts() : {Is insts;}
+					{"begin" insts=LInstsAux() "end" {return insts;}}
 					
-Insts LInstsAux() : {Is insts;}
+Is LInstsAux() : {Is insts;}
 					{insts=LInsts() {return insts;} | {return sem.is_vacia();}}
 
-Insts LInsts() 	: 	{I inst; Is insts;}
-					{inst=I() insts=RLInsts(sem.is_una(inst)) {return insts;}}
+Is LInsts() 	: 	{I inst; Is insts;}
+					{inst=Inst() insts=RLInsts(sem.is_una(inst)) {return insts;}}
 					
-Insts RLInsts(insts0) : {I inst; Is insts1;}
+Is RLInsts(Is insts0) : {I inst; Is insts1;}
 					{inst=Inst() insts1=RLInsts(sem.is_muchas(insts0, inst)) {return insts1;} |
 					{return insts0;}}
 					
-Inst Inst() : {Exp e0, e1; Is insts0, insts1; Decs decs; PReals preals;}
-				{e0=Exp() "=" e1=Exp() {return sem.asig(e0,e1);} |
-				<if> e0=Exp() <then> insts0=LInsts() <end> {return sem.if_then(e0,insts0);} |
-				<if> e0=Exp() <then> insts0=LInsts() <end> ";" {return sem.if_then(e0,insts0);} |
-				<if> e0=Exp() <then> insts0=LInsts() <else> insts1=LInsts() <end> {return sem.if_then_else(e0,insts0,insts1);} |
-				<if> e0=Exp() <then> insts0=LInsts() <else> insts1=LInsts() <end> ";" {return sem.if_then_else(e0,insts0,insts1);} |
-				<while> e0=Exp() <do> insts0=LInsts() <end> {return sem.while1(e0, insts0);} |
-				<while> e0=Exp() <do> insts0=LInsts() <end> ";" {return sem.while1(e0, insts0);} |
-				<read> e0 = Exp() ";" {return sem.read(e0);} |
-				<write> e0 = Exp() ";" {return sem.write(e0);} |
-				<nl> ";" {return sem.nl();} |
-				<new> e0 = Exp() ";" {return sem.new(e0);} |
-				<delete> e0 = Exp() ";" {return sem.delete(e0);} |
-				e0 = Exp() preals=PReals() ";" {return sem.call(e0,preals);} |
-				<seq> decs=Decs() insts0=Insts() {return sem.iComp(decs,insts0);} |
-				<seq> decs=Decs() insts0=Insts() ";" {return sem.iComp(decs,insts0);}}
+void PuntoComaONada() : {} {";" {return;} | {return;}}
+					
+I Inst() : {Exp e0, e1; Is insts0, insts1;I rinst, rinst2; Decs decs; PReals preals;}
+				{e0=Exp() rinst2=RInst2(e0) {return rinst2;} |
+				<If> e0=Exp() <Then> insts0=LInsts() rinst=RInst(e0,insts0) {return rinst;} |
+				<While> e0=Exp() <Do> insts0=LInsts() <End> PuntoComaONada() {return sem.while1(e0, insts0);} |
+				<Read> e0 = Exp() ";" {return sem.read(e0);} |
+				<Write> e0 = Exp() ";" {return sem.write(e0);} |
+				<Nl> ";" {return sem.nl();} |
+				<New> e0 = Exp() ";" {return sem.new1(e0);} |
+				<Delete> e0 = Exp() ";" {return sem.delete(e0);} |
+				<Seq> decs=Decs() insts0=Insts() PuntoComaONada() {return sem.iComp(decs,insts0);}}
 				
+I RInst(Exp ah1, Is ah2) : {Is is;}
+				{<End> PuntoComaONada() {return sem.if_then(ah1, ah2);} | 
+				<Else> is = LInsts() <End> PuntoComaONada() {return sem.if_then_else(ah1, ah2, is);}}
+				
+I RInst2(Exp ah) : {Is is;Exp e1; PReals preals;}
+				{"=" e1=Exp() ";" {return sem.asig(ah,e1);} | 
+				preals=PReals() ";" {return sem.call(ah ,preals);}}
 				
 Exp Exp() : {Exp e0;}
-			{e0=Exp() {return e0;}}
+			{e0=Exp0() {return e0;}}
 			
 Exp Exp0() : {Exp e0, re1;}
 			{e0=Exp1() re1=RExp0(e0) {return re1;}}
 			
-Exp RExp0(rexp0h) : {String op; Exp e1;}
-			{op=Op0() e1=Exp1() {return sem.exbp(op, rexp0h, e1);} | {return rexp0h;}}
+Exp RExp0(Exp rexp0h) : {String op; Exp e1;}
+			{op=Op0() e1=Exp1() {return sem.expb(op, rexp0h, e1);} | {return rexp0h;}}
 			
 String Op0() : {}
 			{"<" {return "<";} |
@@ -188,14 +189,14 @@ String Op0() : {}
 			"==" {return "==";} |
 			"!=" {return "!=";}}
 			
-Exp Exp1() : {Exp e2, rexp1, rexp1p}
+Exp Exp1() : {Exp e2, rexp1, rexp1p;}
 			{e2 = Exp2() rexp1=RExp1(e2) rexp1p=RExp1P(rexp1) {return rexp1p;}}
 			
-Exp RExp1(rexp10) : {Exp e2;}
-			{"+" e2=Exp2() {return sem.expb("+", rexp10, e2};} |
+Exp RExp1(Exp rexp10) : {Exp e2;}
+			{"+" e2=Exp2() {return sem.expb("+", rexp10, e2);} |
 			{return rexp10;}}
 			
-Exp RExp1P(rexp1p0) : {Exp e2, rexp1p1}
+Exp RExp1P(Exp rexp1p0) : {Exp e2, rexp1p1;}
 			{"-" e2=Exp2() rexp1p1=RExp1P(sem.expb("-", rexp1p0, e2)) {return rexp1p1;} |
 			{return rexp1p0;}}
 			
@@ -203,7 +204,7 @@ Exp Exp2() : {Exp e3, rexp2;}
 			{e3=Exp3() rexp2=RExp2(e3) {return rexp2;}}
 			
 			
-Exp RExp2(rexp20) : {Exp e2, e3;}
+Exp RExp2(Exp rexp20) : {Exp e2, e3;}
 			{"and" e3=Exp3() {return sem.expb("and", rexp20, e3);} |
 			"or" e2=Exp2() {return sem.expb("or", rexp20, e2);} |
 			{return rexp20;}}
@@ -213,8 +214,8 @@ Exp Exp3() : {Exp e4, rexp3;}
 			{e4=Exp4() rexp3=RExp3(e4) {return rexp3;}}
 	
 	
-Exp RExp3(rexp30) : {String op; Exp e4, rexp31;}
-			{op=Op3() e4=Exp4() rexp31=RExp3(sem.expb(op.op, rexp30, e4)) {return rexp31;} |
+Exp RExp3(Exp rexp30) : {String op; Exp e4, rexp31;}
+			{op=Op3() e4=Exp4() rexp31=RExp3(sem.expb(op, rexp30, e4)) {return rexp31;} |
 			{return rexp30;}}
 			
 String Op3() : {}
@@ -224,7 +225,7 @@ String Op3() : {}
 			
 			
 Exp Exp4() : {String op; Exp e4, e5;}
-			{op=Op4() e4=Exp4()	{return sem.expu(op.op, e4);} |
+			{op=Op4() e4=Exp4()	{return sem.expu(op, e4);} |
 			e5=Exp5() {return e5;}}
 						
 String Op4() : {}
@@ -235,23 +236,21 @@ String Op4() : {}
 Exp Exp5() : {Exp e6, rexp5;}
 			{e6=Exp6() rexp5=RExp5(e6) {return rexp5;}}
 			
-Exp RExp5(rexp50) : {String op; Exp rexp51;}
-			{op=Op5() rexp51=RExp5(sem.exp_mem(op.op, op.a, op.valor, rexp50)) {return rexp51;} |
+Exp RExp5(Exp rexp50) : {Token id; Exp exp0, rexp51;}
+			{"[" exp0=Exp0() "]" rexp51=RExp5(sem.indx(rexp50, exp0)) {return rexp51;} |
+			"^" rexp51=RExp5(sem.dref(rexp50)) {return rexp51;} |
+			"." id=<Id> rexp51=RExp5(sem.acc(rexp50, new StringLocalizado(id))) {return rexp51;} |
 			{return rexp50;}}
 			
- String Op5() : {Token id;Exp e5;}
-			{"[" e5=Exp5() "]"  {return new MemOp("indx", e5, null);} |
-			"." id=<id> {return new MemOp("acc", null, new StringLocalizado(id));} |
-			"^" "." id=<id> {return new MemOp("dref", null, new StringLocalizado(id));}
 			
 Exp Exp6() : {Token id; Exp e;}
-			{id=<litent> {return sem.litEnt(new StringLocalizado(id));} |
-			id=<litreal> {return sem.litReal(new StringLocalizado(id));} |
-			id=<litstring> {return sem.litStr(new StringLocalizado(id));} |
-			<true> {return sem.true1();} |
-			<false> {return sem.false1();} |
-			id=<id> {return sem.id(new StringLocalizado(id));} |
-			<null> {return sem.null1();} |
+			{id=<Litent> {return sem.litInt(new StringLocalizado(id));} |
+			id=<Litreal> {return sem.litReal(new StringLocalizado(id));} |
+			id=<Litstr> {return sem.litStr(new StringLocalizado(id));} |
+			id=<True> {return sem.true1(new StringLocalizado(id));} |
+			id=<False> {return sem.false1(new StringLocalizado(id));} |
+			id=<Id> {return sem.id(new StringLocalizado(id));} |
+			id=<Null> {return sem.null1(new StringLocalizado(id));} |
 			"(" e=Exp0() ")" {return e;}}
 
  

@@ -14,27 +14,27 @@ public class SemOps extends TinyASint {
 		case "/":
 			return div(arg0, arg1);
 		case "<":
-			return menor(arg0,arg1);
+			return menor(arg0, arg1);
 		case ">":
-			return mayor(arg0,arg1);
+			return mayor(arg0, arg1);
 		case "<=":
-			return menorIgual(arg0,arg1);
+			return menorIgual(arg0, arg1);
 		case ">=":
-			return mayorIgual(arg0,arg1);
+			return mayorIgual(arg0, arg1);
 		case "==":
-			return igual(arg0,arg1);
+			return igual(arg0, arg1);
 		case "!=":
-			return distinto(arg0,arg1);
+			return distinto(arg0, arg1);
 		case "and":
-			return and(arg0,arg1);
+			return and(arg0, arg1);
 		case "or":
-			return or(arg0,arg1);
+			return or(arg0, arg1);
 		case "%":
-			return mod(arg0,arg1);
+			return mod(arg0, arg1);
 		}
 		throw new UnsupportedOperationException("exp " + op);
 	}
-	
+
 	public Exp expu(String op, Exp arg) {
 		switch (op) {
 		case "neg":
@@ -44,16 +44,5 @@ public class SemOps extends TinyASint {
 		}
 		throw new UnsupportedOperationException("exp " + op);
 	}
-	
-	public Exp exp_mem(String op, Exp arg0, StringLocalizado valor, Exp arg1) {
-		switch (op) {
-		case "indx":
-			return indx(arg1, arg0);
-		case "acc":
-			return acc(arg1, valor);
-		case "dref":
-			return dref(arg1, valor);
-		}
-		throw new UnsupportedOperationException("exp " + op);
-	}
+
 }

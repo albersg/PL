@@ -1,0 +1,30 @@
+type myInt: int;
+type intarr: array[30] of myInt;
+type tNodo: record 
+	fi: intarr;
+end;
+type tFi: ^tNodo;
+var pi: tFi;
+var i: int;
+var n: int;
+
+begin
+i = 2;
+write 'Introduce un entero positivo: (recomendable menor de 30): ';
+read n; nl;
+new pi;
+pi^.fi[0] = 0;
+pi^.fi[1] = 1;
+while i < n do
+	pi^.fi[i] = pi^.fi[i - 2] + pi^.fi[i - 1];
+	pi^.fi[i - 2] = pi^.fi[i - 1];
+	pi^.fi[i - 1] = pi^.fi[i];
+	i = i + 1;
+end;
+i = 0;
+while i < n do
+	write pi^.fi[i]; nl; 
+	i = i + 1;
+end;
+delete pi;
+end.
